@@ -65,22 +65,6 @@ def rationed_by(unsatisfied: np.ndarray, sold_out: np.ndarray, partners: np.ndar
     return unsatisfied[:, None] & sold_out[partners]
 
 
-def candidate_sellers(n_buyers: int, active: np.ndarray, prices: np.ndarray, k: int,
-                      rng: np.random.Generator) -> np.ndarray:
-    """Each buyer samples k distinct active sellers, sorted by price (cheapest first).
-    Returns an (n_buyers, k) array of seller indices, -1 where fewer than k exist."""
-    ids = np.nonzero(active)[0]
-    k_eff = min(k, ids.size)
-    out = np.full((n_buyers, k), -1, dtype=np.int64)
-    if k_eff == 0:
-        return out
-    keys = rng.random((n_buyers, ids.size))
-    picks = ids[np.argsort(keys, axis=1)[:, :k_eff]]
-    order = np.argsort(prices[picks], axis=1, kind="stable")
-    out[:, :k_eff] = np.take_along_axis(picks, order, axis=1)
-    return out
-
-
 def clear_proportional(budgets: np.ndarray, candidates: np.ndarray, prices: np.ndarray,
                        stock: np.ndarray):
     """Round r: every buyer with budget left asks its r-th candidate for
