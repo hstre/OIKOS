@@ -1,0 +1,56 @@
+{
+  "decision": "household_goods_budget_v1",
+  "probability_semantics": "score",
+  "mode": "replay",
+  "model_requested": "typesafe/jev-1.14",
+  "endpoint": "https://openrouter.ai/api/alpha/decisions",
+  "seed": 1,
+  "config_sha256_16": "e564480b500ce9cd",
+  "git_commit": "c541275cc9b061ed5f358b31c53063c609a86875",
+  "git_dirty": false,
+  "economy_unchanged_by_observation": true,
+  "replay_log": "results/jev_observe/jev_log.jsonl",
+  "requests": 48,
+  "ok": 48,
+  "errors": 0,
+  "errors_by_kind": {},
+  "models_served": [
+    "typesafe/jev-1.14-20261014"
+  ],
+  "replayed": true,
+  "cost_usd_total": 0.00129158,
+  "cost_usd_per_decision": 2.6908e-05,
+  "latency_s_median": 0.2113,
+  "latency_s_max": 0.8617,
+  "same_option_as_rule_share": 0.0,
+  "option_steps_vs_rule": {
+    "-4": 2,
+    "-3": 15,
+    "-2": 29,
+    "-1": 2
+  },
+  "budget_diff_vs_rule_rel_median": -0.2709009630371898,
+  "by_month": {
+    "-1": {
+      "n": 12,
+      "same_option_as_rule": 0,
+      "mean_option_steps": -2.5
+    },
+    "3": {
+      "n": 12,
+      "same_option_as_rule": 0,
+      "mean_option_steps": -2.0833333333333335
+    },
+    "12": {
+      "n": 12,
+      "same_option_as_rule": 0,
+      "mean_option_steps": -2.5
+    },
+    "30": {
+      "n": 12,
+      "same_option_as_rule": 0,
+      "mean_option_steps": -2.3333333333333335
+    }
+  },
+  "created_unix": 1792417458
+}

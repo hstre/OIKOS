@@ -1,0 +1,89 @@
+{
+  "type": "ping",
+  "options_cents": {
+    "b1": 133000,
+    "b2": 166000,
+    "b3": 199000,
+    "b4": 221000,
+    "b5": 243000
+  },
+  "request_sha256": "976090cbf78453a2190c9d3050637b696cbb4e76f35fbcd56924f3fd558ac90e",
+  "request": {
+    "model": "typesafe/jev-1.14",
+    "state": {
+      "context": "A private household in a stylised European economy. All amounts are euro per month. The energy bill for this month is already fixed.",
+      "household": {
+        "employment": "employed",
+        "net_income_this_month_eur": 2400,
+        "savings_before_this_months_income_eur": 8000,
+        "energy_price_now_ct_per_kwh": 16.2,
+        "energy_price_usually_paid_ct_per_kwh": 9.0,
+        "energy_bill_this_month_eur": 190,
+        "money_available_after_energy_bill_eur": 10010
+      }
+    },
+    "questions": {
+      "goods_budget": {
+        "type": "choice",
+        "instructions": "Which of the listed budgets for goods and services other than energy is this household most likely to set for this month? Consider only what the household knows about its own situation as given in the state.",
+        "criteria": {
+          "b1": "Spend about 1330 € (about 60% of the income left after the energy bill).",
+          "b2": "Spend about 1660 € (about 75% of the income left after the energy bill).",
+          "b3": "Spend about 1990 € (about 90% of the income left after the energy bill).",
+          "b4": "Spend about 2210 € (about 100% of the income left after the energy bill).",
+          "b5": "Spend about 2430 € (about 110% of the income left after the energy bill)."
+        }
+      }
+    }
+  },
+  "status": "ok",
+  "http_status": 200,
+  "response": {
+    "model": "typesafe/jev-1.14-20261014",
+    "answers": {
+      "goods_budget": {
+        "type": "choice",
+        "choice": "b1",
+        "probabilities": {
+          "b1": 0.45,
+          "b2": 0.41,
+          "b3": 0.08,
+          "b4": 0.05,
+          "b5": 0.01
+        },
+        "confidence": 0.31
+      }
+    },
+    "usage": {
+      "input_tokens": 639,
+      "output_tokens": 59,
+      "cost": 2.6838e-05
+    },
+    "id": "gen-dec-1792417445-f5me280kCL1dIJrbtPmz",
+    "provider": "TypeSafe"
+  },
+  "error_kind": null,
+  "error": null,
+  "model_requested": "typesafe/jev-1.14",
+  "model_served": "typesafe/jev-1.14-20261014",
+  "provider": "TypeSafe",
+  "generation_id": "gen-dec-1792417445-f5me280kCL1dIJrbtPmz",
+  "input_tokens": 639,
+  "output_tokens": 59,
+  "cost_usd": 2.6838e-05,
+  "latency_s": 4.0355,
+  "attempts": 1,
+  "replayed": false,
+  "extra": {},
+  "parsed": {
+    "choice": "b1",
+    "scores": {
+      "b1": 0.45,
+      "b2": 0.41,
+      "b3": 0.08,
+      "b4": 0.05,
+      "b5": 0.01
+    },
+    "confidence": 0.31
+  }
+}
