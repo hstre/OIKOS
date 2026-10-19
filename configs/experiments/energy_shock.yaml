@@ -1,0 +1,13 @@
+# Experiment 1: energy price shock with four policy responses at equal budget.
+name: energy_shock
+base: ../baseline.yaml
+seeds: {first: 1, count: 100}
+reference_scenario: S0_none
+scenarios:
+  S0_none:       {policy: {instrument: none}}
+  S1_transfer:   {policy: {instrument: transfer}}
+  S2_subsidy:    {policy: {instrument: subsidy}}
+  S3_investment: {policy: {instrument: investment}}
+# Control run without shock, used to check quasi-stationarity of the baseline.
+control:
+  C0_no_shock:   {shock: {world_price_factor: 1.0}, policy: {instrument: none}}

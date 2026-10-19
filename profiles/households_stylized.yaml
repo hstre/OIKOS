@@ -1,0 +1,98 @@
+# Profil: stilisierte Haushalte, DE-ähnlich (v0.1)
+#
+# status:  sourced   = Wert aus geprüfter Quelle mit passendem Geltungsbereich
+#          assumed   = gesetzte Annahme (ggf. mit Orientierungsquelle, die noch zu prüfen ist)
+#          contested = Quellen widersprechen sich; Widerspruch bleibt dokumentiert
+#
+# In v0.1 ist ehrlicherweise fast alles "assumed". Der Bericht zählt die Status mit.
+
+profile: households_stylized
+population: {region: "stilisiert, DE-ähnlich", period: "unbestimmt", group: "alle Haushalte"}
+reviewed_by: null
+
+parameters:
+  - parameter: households.energy_price_elasticity
+    config_path: households.energy_price_elasticity
+    value: {distribution: normal, mean: -0.15, sd: 0.05, clip: [-0.5, 0.0]}
+    status: assumed
+    sources: []
+    candidate_sources:
+      - "Labandeira, Labeaga, López-Otero (2017): A meta-analysis on the price elasticity of energy demand. Energy Policy. — Orientierung für kurzfristige Elastizitäten; Wert, Energieträger und Geltungsbereich noch nicht geprüft."
+    note: "Kurzfristige Preiselastizität der Haushaltsenergienachfrage. Unabhängig vom Einkommen gezogen."
+
+  - parameter: households.energy_need_kwh
+    config_path: households.energy_need_kwh
+    value: {distribution: lognormal, median_kwh_per_month: 1100, sigma: 0.4}
+    status: assumed
+    sources: []
+    note: "Ein einziger Energieträger (Wärme + Strom zusammengefasst). WICHTIG: unabhängig vom Einkommen verteilt. Real steigt der Energieverbrauch mit dem Einkommen unterproportional; das beeinflusst den Vergleich Transfer vs. Subvention direkt (Erwartung E2)."
+
+  - parameter: households.min_energy_share
+    config_path: households.min_energy_share
+    value: 0.6
+    status: assumed
+    sources: []
+    note: "Unter 60 % des Bedarfs wird freiwillig nicht gespart; darunter nur, wenn das Geld fehlt."
+
+  - parameter: households.consumption_propensity_income
+    config_path: households.consumption_propensity_income
+    value: {distribution: uniform, low: 0.80, high: 0.96}
+    status: assumed
+    sources: []
+    note: "Konsumquote aus laufendem Einkommen (nach Energie). Keine Abhängigkeit vom Einkommensniveau."
+
+  - parameter: households.consumption_propensity_wealth
+    config_path: households.consumption_propensity_wealth
+    value: {distribution: uniform, low: 0.01, high: 0.03}
+    status: assumed
+    sources: []
+    note: "Monatliche Konsumquote aus Einlagen."
+
+  - parameter: households.initial_deposits_eur
+    config_path: households.initial_deposits_eur
+    value: {distribution: lognormal, median: 12000, sigma: 1.0}
+    status: assumed
+    sources: []
+    note: "Bestimmt zusammen mit den Konsumquoten das Nachfrageniveau und damit, ob die Basis nachfrage- oder kapazitätsbeschränkt ist."
+
+  - parameter: households.reference_price_adaptation
+    config_path: households.reference_price_adaptation
+    value: 0.05
+    status: assumed
+    sources: []
+    note: "Gewöhnung an neue Energiepreise: 5 % der Lücke pro Monat."
+
+  - parameter: households.supplier_switch_rate
+    config_path: households.supplier_switch_rate
+    value: 0.02
+    status: assumed
+    sources: []
+
+  - parameter: government.income_tax_rate
+    config_path: government.income_tax_rate
+    value: 0.25
+    status: assumed
+    sources: []
+    note: "Flache Einkommensteuer inkl. Sozialabgaben, stark vereinfacht."
+
+  - parameter: government.unemployment_benefit_replacement
+    config_path: government.unemployment_benefit_replacement
+    value: 0.6
+    status: assumed
+    sources: []
+    note: "Arbeitslosengeld als Anteil am Durchschnittsbruttolohn, unbefristet."
+
+  - parameter: institutions.job_search_rate
+    config_path: institutions.job_search_rate
+    value: 0.5
+    status: assumed
+    sources: []
+    note: "So gesetzt, dass die Basis ca. 6 % Arbeitslosigkeit zeigt; nicht kalibriert."
+
+  - parameter: institutions.job_separation_rate
+    config_path: institutions.job_separation_rate
+    value: 0.015
+    status: assumed
+    sources: []
+
+contradictions: []

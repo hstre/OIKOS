@@ -1,0 +1,97 @@
+# OIKOS v0.1 – stylised baseline economy (monthly periods, euros).
+#
+# Status of all values: SET, not calibrated. They are chosen so that the
+# baseline is quasi-stationary with roughly German-like proportions
+# (energy share of household spending, tax rate, public debt). Sources and
+# status per parameter: profiles/households_stylized.yaml and docs/.
+
+simulation:
+  burn_in_months: 60        # months before the shock; results start at month 0
+  horizon_months: 60        # months after the start of the shock
+
+households:
+  n: 1000
+  initial_deposits_eur: {median: 12000, sigma: 1.0}       # lognormal
+  energy_need_kwh: {median: 1100, sigma: 0.4}              # lognormal, per month
+  consumption_propensity_income: {low: 0.80, high: 0.96}   # uniform
+  consumption_propensity_wealth: {low: 0.01, high: 0.03}   # uniform, per month
+  energy_price_elasticity: {mean: -0.15, sd: 0.05, low: -0.5, high: 0.0}
+  min_energy_share: 0.6             # households never cut below 60 % of need voluntarily
+  reference_price_adaptation: 0.05  # habit: reference price moves 5 %/month towards current
+  supplier_switch_rate: 0.02        # monthly probability to switch to the cheapest supplier
+  owner_share: 0.10                 # richest share of households owns firms, suppliers and bank
+  owners_per_firm: 20
+
+firms:
+  n: 20
+  productivity: 400            # units per worker and month
+  energy_intensity: 2.5        # kWh per unit
+  initial_wage_eur: 3000
+  initial_markup: 0.15
+  markup_bounds: [0.02, 0.60]
+  markup_step: 0.02
+  expectation_weight: 0.3
+  inventory_target: 0.2        # target inventory as share of expected sales
+  inventory_adjustment: 0.25   # share of the inventory gap closed per month
+  inventory_band: [0.10, 0.35]
+  wage_step: 0.01
+  wage_rigidity_months: 24
+  inventory_depreciation: 0.02 # per month
+  equity_target_months: 1.0    # equity above this many months of costs is paid out
+  cash_buffer_months: 1.0      # dividends never reduce deposits below this many months of costs
+  initial_loans_months: 1.0    # initial debt in months of wage bill
+  initial_deposits_months: 1.5
+
+energy:
+  n: 3
+  markup: 0.20
+  labor_per_kwh: 5.0e-6        # one worker per 200 000 kWh/month
+  expectation_weight: 0.3
+  world_price_eur_per_kwh: 0.06
+  equity_target_months: 1.0
+  cash_buffer_months: 1.0
+
+bank:
+  loan_rate_annual: 0.05
+  deposit_rate_annual: 0.01
+  max_debt_to_annual_revenue: 1.0
+  amortization_months: 36
+  capital_target_ratio: 0.12          # equity above 12 % of all loans is paid out
+  initial_equity_share_of_loans: 0.12
+
+government:
+  income_tax_rate: 0.25
+  profit_tax_rate: 0.20
+  unemployment_benefit_replacement: 0.6
+  spending_smoothing_months: 12
+  initial_deposits_eur: 1000000
+
+rest_of_world:
+  spending_rate: 0.5   # share of its deposits the rest of the world spends on domestic goods per month
+
+institutions:
+  min_capital_ratio: 0.08
+  max_layoff_share_per_month: 0.10
+  job_separation_rate: 0.015       # monthly turnover outside the model
+  job_search_rate: 0.50            # monthly probability that an unemployed worker reaches a vacancy
+  startup_capital_months: 2        # entrants receive a start-up loan of this many months of wage bill
+  goods_market_protocol: proportional   # proportional | random_queue
+  goods_market_visits: 3           # number of persistent supplier relationships per household
+  partner_search_price: 0.25       # monthly probability to compare one partner with a random other firm
+  partner_search_quantity: 0.25    # monthly probability to drop a partner that rationed the household
+  partner_min_price_gain: 0.01     # switch only if the other firm is at least 1 % cheaper
+
+shock:
+  start_month: 0
+  duration_months: 24
+  world_price_factor: 2.0
+
+policy:
+  instrument: none     # none | transfer | subsidy | investment
+  budget_share: 0.5
+  start_month: 0
+  duration_months: 24
+  investment:
+    cost_per_retrofit_eur: 15000
+    need_reduction: 0.30
+    lag_months: 6

@@ -1,0 +1,29 @@
+# One-at-a-time sensitivity of the energy shock experiment.
+# Each variant overrides the baseline for ALL scenarios; scenarios and seeds
+# are the same as in energy_shock.yaml (fewer seeds to keep cost low).
+name: energy_shock_sensitivity
+experiment: energy_shock.yaml
+seeds: {first: 1, count: 30}
+indicators:
+  - unemployment_shock
+  - q1_real_consumption_shock
+  - energy_burden_shock
+  - energy_imports_shock
+  - energy_imports_after
+  - price_index_shock
+  - gov_debt_change
+variants:
+  baseline: {}
+  elasticity_low:        {households: {energy_price_elasticity: {mean: -0.05}}}
+  elasticity_high:       {households: {energy_price_elasticity: {mean: -0.30}}}
+  min_energy_share_0.4:  {households: {min_energy_share: 0.4}}
+  wages_flexible:        {firms: {wage_rigidity_months: 6}}
+  wages_rigid:           {firms: {wage_rigidity_months: 48}}
+  search_rate_0.3:       {institutions: {job_search_rate: 0.3}}
+  search_rate_0.7:       {institutions: {job_search_rate: 0.7}}
+  low_household_wealth:  {households: {initial_deposits_eur: {median: 8000}}}
+  row_recycling_0.2:     {rest_of_world: {spending_rate: 0.2}}
+  protocol_random_queue: {institutions: {goods_market_protocol: random_queue}}
+  partners_k2:           {institutions: {goods_market_visits: 2}}
+  population_250:        {households: {n: 250}, firms: {n: 5}}
+  population_4000:       {households: {n: 4000}, firms: {n: 80}}

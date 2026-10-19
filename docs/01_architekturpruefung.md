@@ -190,7 +190,7 @@ Für v0.1 gelten bewusste Vereinfachungen, jeweils dokumentiert und später aust
 - keine Zentralbank, der Staat verschuldet sich direkt bei der Bank;
 - ein einziges homogenes Konsumgut;
 - kein Kapitalstock, Produktion nur aus Arbeit und Energie;
-- das Ausland gibt seine Einnahmen nicht zurück: Der Parameter `export_recycling` steht standardmäßig auf 0 und ist damit eine **sichtbare** Annahme;
+- das Ausland gibt einen Teil seiner Einnahmen für inländische Güter aus. Der Parameter `rest_of_world.spending_rate` ist eine **sichtbare** Annahme (umgesetzt mit 0,5; ursprünglich war 0 geplant, siehe `02_modell_v0_1.md`, Abschnitt 9);
 - **kein informeller Sektor** (siehe Rückfrage).
 
 Neben dem Geld wird Energie **physisch** gebucht (kWh), damit der Ressourcenverbrauch messbar ist.
