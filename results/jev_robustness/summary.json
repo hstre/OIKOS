@@ -1,0 +1,455 @@
+{
+  "decision": "household_goods_budget_v1",
+  "probability_semantics": "score",
+  "mode": "live",
+  "cost_limit_usd": 0.01,
+  "git_commit": "4023d2a86bd89bc34cb0f279c16c960620143997",
+  "git_dirty": false,
+  "numpy_x86_v4": false,
+  "n_states": 48,
+  "original": {
+    "n_ok": 48,
+    "chosen_share_of_base": {
+      "median": 0.7487895005184052,
+      "q10": 0.5990162877107241,
+      "q90": 0.751856881201856
+    },
+    "score_weighted_share_of_base": {
+      "median": 0.7204351046040021,
+      "q10": 0.7017554727844602,
+      "q90": 0.7583268636064406
+    },
+    "mean_score_mass_by_share": {
+      "<55%": 0.0,
+      "55-65%": 0.3843750000000001,
+      "65-80%": 0.43249999999999994,
+      "80-95%": 0.11874999999999998,
+      ">=95%": 0.064375
+    },
+    "groups": {
+      "before_or_after_shock": {
+        "n": 24,
+        "mean_weighted_share": 0.7215176281794694
+      },
+      "during_shock": {
+        "n": 24,
+        "mean_weighted_share": 0.7337092836926619
+      },
+      "employed": {
+        "n": 41,
+        "mean_weighted_share": 0.722432275637943
+      },
+      "unemployed": {
+        "n": 7,
+        "mean_weighted_share": 0.7579603691107838
+      },
+      "savings_below_median": {
+        "n": 24,
+        "mean_weighted_share": 0.7213011626199343
+      },
+      "savings_above_median": {
+        "n": 24,
+        "mean_weighted_share": 0.733925749252197
+      }
+    }
+  },
+  "tests": {
+    "T5_repeat": {
+      "requests_sent": 48,
+      "skipped_cost_limit": 0,
+      "errors_by_kind": {},
+      "models_served": [
+        "typesafe/jev-1.14-20261014"
+      ],
+      "cost_usd": 0.00129158,
+      "chosen_key_counts": {
+        "b1": 14,
+        "b2": 34
+      },
+      "chosen_position_counts": {
+        "1": 14,
+        "2": 34
+      },
+      "same_euro_budget_as_original_share": 0.8125,
+      "chosen_budget_diff_vs_original_eur": {
+        "median": 0.0,
+        "q10": 0.0,
+        "q90": 272.00000000000017
+      },
+      "score_weighted_budget_diff_vs_original_eur": {
+        "median": 0.1,
+        "q10": -32.04,
+        "q90": 28.12000000000003
+      },
+      "tvd_vs_original": {
+        "n": 48,
+        "median": 0.039999999999999994,
+        "q90": 0.08,
+        "max": 0.14999999999999997
+      },
+      "n_ok": 48,
+      "chosen_share_of_base": {
+        "median": 0.749234794716868,
+        "q10": 0.5990740800209328,
+        "q90": 0.751543787124099
+      },
+      "score_weighted_share_of_base": {
+        "median": 0.7245227918249879,
+        "q10": 0.7067083102426472,
+        "q90": 0.755151872605933
+      },
+      "mean_score_mass_by_share": {
+        "<55%": 0.0,
+        "55-65%": 0.38166666666666665,
+        "65-80%": 0.43291666666666667,
+        "80-95%": 0.11937500000000001,
+        ">=95%": 0.06604166666666667
+      },
+      "groups": {
+        "before_or_after_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.7218231779661867
+        },
+        "during_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.7353024991993098
+        },
+        "employed": {
+          "n": 41,
+          "mean_weighted_share": 0.7233155589836442
+        },
+        "unemployed": {
+          "n": 7,
+          "mean_weighted_share": 0.7592969048060724
+        },
+        "savings_below_median": {
+          "n": 24,
+          "mean_weighted_share": 0.7211475670985236
+        },
+        "savings_above_median": {
+          "n": 24,
+          "mean_weighted_share": 0.735978110066973
+        }
+      }
+    },
+    "T1_reversed_order": {
+      "requests_sent": 48,
+      "skipped_cost_limit": 0,
+      "errors_by_kind": {},
+      "models_served": [
+        "typesafe/jev-1.14-20261014"
+      ],
+      "cost_usd": 0.00129158,
+      "chosen_key_counts": {
+        "b1": 2,
+        "b2": 12,
+        "b3": 34
+      },
+      "chosen_position_counts": {
+        "3": 34,
+        "4": 12,
+        "5": 2
+      },
+      "same_euro_budget_as_original_share": 0.1875,
+      "chosen_budget_diff_vs_original_eur": {
+        "median": 315.0,
+        "q10": 0.0,
+        "q90": 640.0
+      },
+      "score_weighted_budget_diff_vs_original_eur": {
+        "median": 186.8,
+        "q10": 115.19999999999999,
+        "q90": 239.35000000000005
+      },
+      "tvd_vs_original": {
+        "n": 48,
+        "median": 0.31500000000000006,
+        "q90": 0.42,
+        "max": 0.51
+      },
+      "n_ok": 48,
+      "chosen_share_of_base": {
+        "median": 0.8991930190548565,
+        "q10": 0.7489220297765166,
+        "q90": 0.9014278068285543
+      },
+      "score_weighted_share_of_base": {
+        "median": 0.8088787051755939,
+        "q10": 0.7858777979827379,
+        "q90": 0.8324047193720098
+      },
+      "mean_score_mass_by_share": {
+        "<55%": 0.0,
+        "55-65%": 0.19541666666666666,
+        "65-80%": 0.3060416666666667,
+        "80-95%": 0.3791666666666667,
+        ">=95%": 0.11916666666666666
+      },
+      "groups": {
+        "before_or_after_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.8077124417860034
+        },
+        "during_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.8115730329243664
+        },
+        "employed": {
+          "n": 41,
+          "mean_weighted_share": 0.8082851438897775
+        },
+        "unemployed": {
+          "n": 7,
+          "mean_weighted_share": 0.817594356224001
+        },
+        "savings_below_median": {
+          "n": 24,
+          "mean_weighted_share": 0.798125855944026
+        },
+        "savings_above_median": {
+          "n": 24,
+          "mean_weighted_share": 0.821159618766344
+        }
+      }
+    },
+    "T2_euro_only": {
+      "requests_sent": 48,
+      "skipped_cost_limit": 0,
+      "errors_by_kind": {},
+      "models_served": [
+        "typesafe/jev-1.14-20261014"
+      ],
+      "cost_usd": 0.00113635,
+      "chosen_key_counts": {
+        "b2": 42,
+        "b3": 6
+      },
+      "chosen_position_counts": {
+        "2": 42,
+        "3": 6
+      },
+      "same_euro_budget_as_original_share": 0.5625,
+      "chosen_budget_diff_vs_original_eur": {
+        "median": 0.0,
+        "q10": 0.0,
+        "q90": 333.00000000000006
+      },
+      "score_weighted_budget_diff_vs_original_eur": {
+        "median": 158.8,
+        "q10": 104.89,
+        "q90": 223.98000000000008
+      },
+      "tvd_vs_original": {
+        "n": 48,
+        "median": 0.25,
+        "q90": 0.31300000000000006,
+        "max": 0.43
+      },
+      "n_ok": 48,
+      "chosen_share_of_base": {
+        "median": 0.7500825185054395,
+        "q10": 0.7480872448724604,
+        "q90": 0.8989488890885957
+      },
+      "score_weighted_share_of_base": {
+        "median": 0.7955783057738128,
+        "q10": 0.7829481404264081,
+        "q90": 0.8230170091468991
+      },
+      "mean_score_mass_by_share": {
+        "<55%": 0.0,
+        "55-65%": 0.20458333333333334,
+        "65-80%": 0.37229166666666674,
+        "80-95%": 0.27687500000000004,
+        ">=95%": 0.14625
+      },
+      "groups": {
+        "before_or_after_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.7930720218750663
+        },
+        "during_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.8060535462159312
+        },
+        "employed": {
+          "n": 41,
+          "mean_weighted_share": 0.799540041080016
+        },
+        "unemployed": {
+          "n": 7,
+          "mean_weighted_share": 0.7996959928433273
+        },
+        "savings_below_median": {
+          "n": 24,
+          "mean_weighted_share": 0.7944722704418435
+        },
+        "savings_above_median": {
+          "n": 24,
+          "mean_weighted_share": 0.8046532976491543
+        }
+      }
+    },
+    "T3_with_history": {
+      "requests_sent": 48,
+      "skipped_cost_limit": 0,
+      "errors_by_kind": {},
+      "models_served": [
+        "typesafe/jev-1.14-20261014"
+      ],
+      "cost_usd": 0.00138634,
+      "chosen_key_counts": {
+        "b2": 7,
+        "b3": 20,
+        "b4": 21
+      },
+      "chosen_position_counts": {
+        "2": 7,
+        "3": 20,
+        "4": 21
+      },
+      "same_euro_budget_as_original_share": 0.08333333333333333,
+      "chosen_budget_diff_vs_original_eur": {
+        "median": 525.0,
+        "q10": 250.0,
+        "q90": 809.0000000000001
+      },
+      "score_weighted_budget_diff_vs_original_eur": {
+        "median": 371.2,
+        "q10": 181.22,
+        "q90": 467.96000000000004
+      },
+      "tvd_vs_original": {
+        "n": 48,
+        "median": 0.625,
+        "q90": 0.72,
+        "max": 0.78
+      },
+      "n_ok": 48,
+      "chosen_share_of_base": {
+        "median": 0.9018415980501049,
+        "q10": 0.7503454287970764,
+        "q90": 1.0013927252523647
+      },
+      "score_weighted_share_of_base": {
+        "median": 0.8954956316973248,
+        "q10": 0.8318047611631327,
+        "q90": 0.9331951853614707
+      },
+      "mean_score_mass_by_share": {
+        "<55%": 0.0,
+        "55-65%": 0.06229166666666667,
+        "65-80%": 0.21333333333333335,
+        "80-95%": 0.370625,
+        ">=95%": 0.35291666666666677
+      },
+      "groups": {
+        "before_or_after_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.8970567489545654
+        },
+        "during_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.8776143322715928
+        },
+        "employed": {
+          "n": 41,
+          "mean_weighted_share": 0.8937019884442081
+        },
+        "unemployed": {
+          "n": 7,
+          "mean_weighted_share": 0.8500463461736095
+        },
+        "savings_below_median": {
+          "n": 24,
+          "mean_weighted_share": 0.8865934061127149
+        },
+        "savings_above_median": {
+          "n": 24,
+          "mean_weighted_share": 0.8880776751134434
+        }
+      }
+    },
+    "T4_wider_range": {
+      "requests_sent": 48,
+      "skipped_cost_limit": 0,
+      "errors_by_kind": {},
+      "models_served": [
+        "typesafe/jev-1.14-20261014"
+      ],
+      "cost_usd": 0.00143342,
+      "chosen_key_counts": {
+        "b2": 11,
+        "b3": 30,
+        "b4": 7
+      },
+      "chosen_position_counts": {
+        "2": 11,
+        "3": 30,
+        "4": 7
+      },
+      "same_euro_budget_as_original_share": 0.375,
+      "chosen_budget_diff_vs_original_eur": {
+        "median": -310.0,
+        "q10": -673.0,
+        "q90": 0.0
+      },
+      "score_weighted_budget_diff_vs_original_eur": {
+        "median": -265.25,
+        "q10": -341.48,
+        "q90": -205.30999999999997
+      },
+      "tvd_vs_original": {
+        "n": 0,
+        "median": null,
+        "q90": null,
+        "max": null
+      },
+      "n_ok": 48,
+      "chosen_share_of_base": {
+        "median": 0.6000428080690409,
+        "q10": 0.45075866396996594,
+        "q90": 0.7490492599145636
+      },
+      "score_weighted_share_of_base": {
+        "median": 0.6014025176916118,
+        "q10": 0.5752627983157093,
+        "q90": 0.6253366644098347
+      },
+      "mean_score_mass_by_share": {
+        "<55%": 0.3564583333333333,
+        "55-65%": 0.30645833333333333,
+        "65-80%": 0.24041666666666664,
+        "80-95%": 0.051875000000000004,
+        ">=95%": 0.044791666666666674
+      },
+      "groups": {
+        "before_or_after_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.5987156255797474
+        },
+        "during_shock": {
+          "n": 24,
+          "mean_weighted_share": 0.6027819979230802
+        },
+        "employed": {
+          "n": 41,
+          "mean_weighted_share": 0.5962872090974299
+        },
+        "unemployed": {
+          "n": 7,
+          "mean_weighted_share": 0.6268810558676048
+        },
+        "savings_below_median": {
+          "n": 24,
+          "mean_weighted_share": 0.5941709286731377
+        },
+        "savings_above_median": {
+          "n": 24,
+          "mean_weighted_share": 0.6073266948296898
+        }
+      }
+    }
+  },
+  "cost_usd_total": 0.00653927
+}
