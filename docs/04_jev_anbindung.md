@@ -1,6 +1,6 @@
 # Jev-Anbindung (Beobachtungsmodus)
 
-Stand: 2026-10-19 · Status: implementiert und mit simulierten Antworten getestet; echte Anfragen stehen aus, bis der Schlüssel in der Ausführungsumgebung verfügbar ist.
+Stand: 2026-10-19 · Status: implementiert, mit simulierten Antworten getestet und in einem ersten echten Beobachtungslauf geprüft (48 Entscheidungen, 0 Fehler, ≈ 0,0013 USD). Auswertung: [`05_jev_beobachtung_lauf1.md`](05_jev_beobachtung_lauf1.md).
 
 ## Was Jev ist (laut OpenRouter-Dokumentation, geprüft am 19.10.2026)
 

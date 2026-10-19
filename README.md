@@ -82,6 +82,7 @@ LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Br
 - [`docs/02_modell_v0_1.md`](docs/02_modell_v0_1.md) – Modellbeschreibung v0.1: Bilanzen, Periodenablauf, Regeln, Annahmen, Grenzen
 - [`docs/03_ergebnisse_experiment1.md`](docs/03_ergebnisse_experiment1.md) – Auswertung Experiment 1 mit Grenzen und nächsten Schritten
 - [`docs/04_jev_anbindung.md`](docs/04_jev_anbindung.md) – Jev-Adapter, Beobachtungsmodus, Fehlerbehandlung, Replay, Schlüsselablage
+- [`docs/05_jev_beobachtung_lauf1.md`](docs/05_jev_beobachtung_lauf1.md) – erster echter Jev-Beobachtungslauf: Funktion, Kosten, Abweichungen
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 
