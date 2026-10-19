@@ -30,7 +30,7 @@ from ..behavior.jev.household_budget import (DECISION_VERSION, PROBABILITY_SEMAN
                                              build_request, parse_choice)
 from ..model import Economy
 from .jev_observe import load_spec
-from .runner import _git
+from .runner import _git, cpu_features
 
 WIDE_FRACTIONS = [0.3, 0.45, 0.6, 0.75, 0.9, 1.0, 1.1]
 HISTORY_FIELD = "spending_on_other_goods_and_services_last_month_eur"
@@ -248,6 +248,7 @@ def analyse(states, results, guard, mode, limit) -> dict:
     out = {"decision": DECISION_VERSION, "probability_semantics": PROBABILITY_SEMANTICS, "mode": mode,
            "cost_limit_usd": limit, "git_commit": _git("rev-parse", "HEAD"),
            "git_dirty": bool(_git("status", "--porcelain", "--untracked-files=no")),
+           "numpy_x86_v4": cpu_features().get("X86_V4", False),
            "n_states": len(states), "original": describe(orig), "tests": {}}
     total_cost = 0.0
     for test, rows in results.items():

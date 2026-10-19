@@ -53,6 +53,16 @@ def run_one(args):
     return df, info
 
 
+def cpu_features() -> dict[str, bool]:
+    """SIMD features numpy dispatches to. Bitwise identity of results is only
+    guaranteed between machines with the same active features."""
+    try:
+        from numpy._core._multiarray_umath import __cpu_features__ as feats
+    except ImportError:  # pragma: no cover - older numpy layout
+        from numpy.core._multiarray_umath import __cpu_features__ as feats
+    return {k: bool(v) for k, v in feats.items()}
+
+
 def records_hash(records: list[dict]) -> str:
     blob = json.dumps(records, sort_keys=True, default=float).encode()
     return hashlib.sha256(blob).hexdigest()
@@ -106,6 +116,7 @@ def run_experiment(path: str | Path, out_dir: str | Path, n_seeds: int | None = 
         "numpy": np.__version__,
         "pandas": pd.__version__,
         "platform": platform.platform(),
+        "numpy_cpu_features_active": sorted(k for k, v in cpu_features().items() if v),
         "seeds": seeds,
         "reference_scenario": exp["reference_scenario"],
         "scenarios": {name: {"config_sha256_16": config_hash(cfg), "config": cfg} for name, cfg in configs.items()},

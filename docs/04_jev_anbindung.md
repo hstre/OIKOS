@@ -72,4 +72,5 @@ python -m oikos jev-observe --mode replay \
 
 - Kein Steuerungsmodus: Jev beeinflusst die Wirtschaft nicht.
 - Keine Ableitung menschlicher Entscheidungswahrscheinlichkeiten aus Jevs Scores.
-- Keine Änderung an Parametern, Regeln oder Haushaltsprofilen. v0.1 ist als lokaler Tag `v0.1.0` markiert (das Pushen des Tags wurde von der Umgebung abgewiesen) und durch `tests/test_reference_v0_1.py` gesichert: Der Test vergleicht Regelläufe bitgenau mit den Hashes aus `results/energy_shock/manifest.json`.
+- Keine Änderung an Parametern, Regeln oder Haushaltsprofilen.
+- **Reproduzierbarkeit hängt von der Hardware ab**: numpy wählt SIMD-Kernels (z. B. für `exp`, `log`) nach den CPU-Befehlssätzen; ohne AVX-512 weichen Gleitkommaergebnisse in der letzten Stelle ab (beobachtet: relativ ≈ 1e-15, ganzzahlige Geldgrößen identisch). Bitgleichheit mit v0.1 wird daher nur auf Hardware mit numpy-`X86_V4` geprüft; überall sonst prüft ein Test die Kennzahlen aller Referenzläufe mit relativer Toleranz 1e-9. Manifeste enthalten ab jetzt die aktiven CPU-Merkmale. v0.1 ist als lokaler Tag `v0.1.0` markiert (das Pushen des Tags wurde von der Umgebung abgewiesen) und durch `tests/test_reference_v0_1.py` gesichert: Der Test vergleicht Regelläufe bitgenau mit den Hashes aus `results/energy_shock/manifest.json`.
