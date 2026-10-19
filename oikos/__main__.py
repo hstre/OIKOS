@@ -61,6 +61,11 @@ def main() -> None:
     jr.add_argument("--cost-limit-usd", type=float, default=0.01)
     jr.add_argument("--mode", choices=["live", "replay"], default="live")
     jr.add_argument("--replay-dir", default=None)
+    jpp = sub.add_parser("jev-pairs", help="pre-registered paired test of the Jev budget question (observation only)")
+    jpp.add_argument("--spec", default="configs/experiments/jev_pairs.yaml")
+    jpp.add_argument("--out", default=None)
+    jpp.add_argument("--mode", choices=["live", "replay"], default="live")
+    jpp.add_argument("--replay-log", default=None)
     args = ap.parse_args()
 
     if args.cmd == "run":
@@ -81,6 +86,20 @@ def main() -> None:
         from .experiments.compare import compare
 
         print(compare(args.dir_a, args.dir_b))
+    elif args.cmd == "jev-pairs":
+        import json as _json
+        import sys
+
+        from .behavior.jev.client import MissingKeyError
+        from .experiments.jev_pairs import run_pairs
+
+        try:
+            r = run_pairs(args.spec, args.out, args.mode, args.replay_log)
+        except MissingKeyError as e:
+            sys.exit(f"Jev: {e}. Set it in the execution environment, never in files or Git.")
+        print(_json.dumps({k: r[k] for k in ("requests", "requests_ok", "errors_by_kind", "cost_usd_logged",
+                                              "noise_eur_median")}, indent=2))
+        sys.exit(1 if r["errors_by_kind"] else 0)
     elif args.cmd == "jev-robustness":
         import json as _json
         import sys

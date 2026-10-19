@@ -1,0 +1,53 @@
+# Pre-registered paired test of the Jev budget question (72 requests, cost
+# limit 0.01 USD, observation only). Uses the repository secret
+# OPENROUTER_API_KEY only in the live step; GitHub masks it in logs.
+# Start: push a branch named jev-pairs/<anything>.
+name: Jev paired test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["jev-pairs/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jev-pairs
+  cancel-in-progress: false
+
+jobs:
+  pairs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Tests (simulated API responses only)
+        run: python -m pytest -q
+      - name: Jev paired test (live, cost limit 0.01 USD)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m oikos jev-pairs --mode live --out results/jev_pairs
+      - name: Replay check (no network, no key)
+        if: always()
+        run: |
+          python -m oikos jev-pairs --mode replay --replay-log results/jev_pairs/jev_log.jsonl \
+            --out results/jev_pairs_replay
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "oikos-bot"
+          git config user.email "oikos-bot@users.noreply.github.com"
+          git add results/jev_pairs results/jev_pairs_replay || true
+          git commit -m "Jev paired test (${GITHUB_RUN_ID})" || echo "nothing to commit"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jev-pairs
+          path: results/jev_pairs*
