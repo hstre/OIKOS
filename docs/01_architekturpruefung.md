@@ -225,7 +225,7 @@ Geprüfte Invarianten:
 
 ```python
 class DecisionModel(Protocol):
-    meta: ModelMeta    # Name, Version, Art (rule|statistical|nn|llm),
+    meta: ModelMeta    # Name, Version, Art (rule|statistical|nn|system1|llm),
                        # Hash von Gewichten/Konfiguration, deterministisch?,
                        # Semantik der Wahrscheinlichkeiten ("none" | "score" | "calibrated_choice_prob"),
                        # Validierungsstatus und -daten
@@ -235,6 +235,9 @@ class DecisionModel(Protocol):
 
 - **ObservationBatch**: strukturierte Arrays für alle Akteure, die in diesem Schritt entscheiden. Er enthält nur Informationen, die der Akteur tatsächlich lokal kennt. Ein Aufruf deckt den ganzen Batch ab, was die Bündelung der Aufrufe ergibt.
 - **ActionSpace**: geschlossen und typisiert, z. B. Konsumquote ∈ [0, 1] oder Preisänderung ∈ {−5 %, …, +5 %}. Die Simulation lehnt ungültige Aktionen ab und verwendet stattdessen eine dokumentierte Ersatzregel. Diese Fälle werden gezählt.
+- **System-1-Entscheidungsmodelle (Prinzip Jev)**: Modelle, die keinen Text erzeugen, sondern zu einem Zustand und vorgegebenen Handlungsoptionen eine strukturierte, typisierte Entscheidung oder Bewertung liefern. Sie passen ohne Adapter auf diese Schnittstelle. In `ModelMeta` werden sie als eigene Art geführt (`kind: system1`), getrennt von `nn` und `llm`. Für ihre Bewertung gelten zwei Punkte:
+  - Ihre Gültigkeit hängt von den Trainingsdaten ab. Wurde ein solches Modell auf Ausgaben eines LLM trainiert, erbt es dessen Verzerrungen (vgl. 2.6). Wurde es auf beobachteten Entscheidungen trainiert, ist es direkt an Verhalten prüfbar.
+  - Seine Bewertungen sind Scores. Als Wahrscheinlichkeiten menschlicher Entscheidungen gelten sie erst nach Kalibrierung (vgl. 2.4).
 - **Scheduler**: legt fest, wer wann entscheidet, periodisch oder ereignisbasiert. Die Auslöser sind Teil der Konfiguration.
 - **Institution**: reine Funktionen bzw. Objekte, die in YAML parametrisiert werden (Steuertarif, Transfer, Subvention, Kreditregel, Insolvenzregel, Marktprotokoll). Ein Szenario ist eine Abweichung (Diff) gegenüber der Basiskonfiguration.
 - **Messung**: Jeder `decide`-Aufruf protokolliert Aufrufe, Laufzeit und Speicher, bei LLMs zusätzlich Tokens.
@@ -301,8 +304,9 @@ In v0.1 sind die meisten Werte ehrlicherweise **Annahmen**. Die Ergebnisberichte
 ### 5.8 Danach (v0.2 ff.)
 - **v0.2**: Die Energie- und Konsumentscheidung der Haushalte erhält drei Alternativen:
   - (a) ein statistisches Modell mit Elastizitäten aus der Literatur;
-  - (b) ein kleines lokales LLM mit Archetypen;
-  - (c) ein LLM pro Haushalt auf einem Teilensemble zur Messung des Archetypenfehlers.
+  - (b) ein System-1-Entscheidungsmodell nach dem Prinzip Jev, sofern geeignete Trainingsdaten vorliegen;
+  - (c) ein kleines lokales LLM mit Archetypen;
+  - (d) ein LLM pro Haushalt auf einem Teilensemble zur Messung des Archetypenfehlers.
 
   Die Varianten werden gegen Mikrodaten zum Verbrauchsverhalten 2022/23 geprüft. Außerdem wird gemessen, ob sich die Makroergebnisse überhaupt ändern. LLM-Cache und Replay-Modus sind ab dieser Version Pflicht.
 - **v0.3**: Preis- und Investitionsentscheidungen der Firmen, Kreditentscheidung der Bank als austauschbares Modell, Zentralbank.
