@@ -242,6 +242,11 @@ def build_report(exp_dir: str | Path, profile_dir: str | Path = "profiles") -> P
     for name, d in manifest["decision_models"].items():
         md.append(f"| {name} | {d['model']} {d['version']} | {d['kind']} | {d['calls']} | {d['agent_decisions']} | "
                   f"{d['seconds']} | {d['invalid_actions']} |")
+    for name, d in manifest["decision_models"].items():
+        if d.get("params"):
+            md.append(f"\n`{name}` Parameter: " + ", ".join(f"{k}={v}" for k, v in d["params"].items()))
+        if d.get("table_fallbacks"):
+            md.append(f"\n`{name}`: {d['table_fallbacks']} Entscheidungen ohne gültigen Tabelleneintrag (Änderung 0 verwendet)")
     md += ["", f"Laufzeit-Flags (Summe über alle Läufe): {manifest['run_flags']}", ""]
     (out / "report.md").write_text("\n".join(md), encoding="utf-8")
     return out / "report.md"

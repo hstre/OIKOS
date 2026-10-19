@@ -22,8 +22,10 @@ from ..model import Economy
 from .summary import summarize_run
 
 
-def scenario_configs(exp: dict, include_control: bool = True) -> dict[str, dict]:
-    base = exp["base_config"]
+def scenario_configs(exp: dict, include_control: bool = True, override: dict | None = None) -> dict[str, dict]:
+    """Baseline <- experiment-wide `common` <- command-line override <- scenario."""
+    base = deep_merge(exp["base_config"], exp.get("common") or {})
+    base = deep_merge(base, override or {})
     out = {name: deep_merge(base, ov or {}) for name, ov in exp["scenarios"].items()}
     if include_control:
         out.update({name: deep_merge(base, ov or {}) for name, ov in (exp.get("control") or {}).items()})
@@ -65,14 +67,14 @@ def _git(*args: str) -> str:
 
 
 def run_experiment(path: str | Path, out_dir: str | Path, n_seeds: int | None = None,
-                   workers: int | None = None) -> Path:
+                   workers: int | None = None, override: dict | None = None) -> Path:
     exp = load_experiment(path)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     first = int(exp["seeds"]["first"])
     count = int(n_seeds if n_seeds is not None else exp["seeds"]["count"])
     seeds = list(range(first, first + count))
-    configs = scenario_configs(exp)
+    configs = scenario_configs(exp, override=override)
     jobs = [(name, cfg, s) for name, cfg in configs.items() for s in seeds]
 
     t0 = time.perf_counter()
@@ -96,6 +98,7 @@ def run_experiment(path: str | Path, out_dir: str | Path, n_seeds: int | None = 
     manifest = {
         "experiment": exp["name"],
         "experiment_file": str(path),
+        "override": override or {},
         "created_unix": int(time.time()),
         "git_commit": _git("rev-parse", "HEAD"),
         "git_dirty": bool(_git("status", "--porcelain", "--untracked-files=no")),
@@ -125,9 +128,10 @@ def _aggregate_decisions(infos: list[dict]) -> dict:
     agg: dict[str, dict] = {}
     for info in infos:
         for name, d in info["decisions"].items():
-            a = agg.setdefault(name, {k: d[k] for k in ("model", "version", "kind")} |
-                               {"calls": 0, "agent_decisions": 0, "seconds": 0.0, "invalid_actions": 0})
-            for k in ("calls", "agent_decisions", "seconds", "invalid_actions"):
+            a = agg.setdefault(name, {k: d[k] for k in ("model", "version", "kind", "params")} |
+                               {"calls": 0, "agent_decisions": 0, "seconds": 0.0, "invalid_actions": 0,
+                                "table_fallbacks": 0})
+            for k in ("calls", "agent_decisions", "seconds", "invalid_actions", "table_fallbacks"):
                 a[k] += d[k]
     for a in agg.values():
         a["seconds"] = round(a["seconds"], 2)

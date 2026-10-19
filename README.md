@@ -40,6 +40,28 @@ python -m oikos sensitivity configs/experiments/energy_shock_sensitivity.yaml
 Ergebnisse landen in `results/<experiment>/` (`report.md`, Grafiken, `summary.csv`,
 `paired_differences.csv`, `manifest.json`).
 
+## LLM-Entscheidungstabelle (v0.2-Vorstufe)
+
+Die Haushaltsentscheidung kann statt durch die Regel durch eine **LLM-erzeugte
+Entscheidungstabelle** getroffen werden (`oikos/behavior/llm/`). Haushaltssituationen
+werden in 1 500 Zellen eingeteilt; ein Modell über OpenRouter beantwortet jede Zelle
+einmal (Temperatur 0, festes JSON-Schema). Die Tabelle wird als JSON und CSV gespeichert,
+kann von Menschen geprüft und korrigiert werden, und die Simulation läuft danach offline
+und reproduzierbar. Kosten hängen nur von der Zahl der Zellen ab.
+
+```bash
+export OPENROUTER_API_KEY=...        # nie ins Repository schreiben
+python -m oikos llm-table --model mistralai/mistral-small-3.2-24b-instruct \
+    --out data/llm_tables/mistral-small.json --max-cost-usd 1
+python -m oikos run configs/experiments/energy_shock_llm.yaml \
+    --override "{behavior: {household: {model: llm_table, table: data/llm_tables/mistral-small.json}}}"
+python -m oikos compare results/energy_shock results/energy_shock_llm
+```
+
+Ohne lokalen Schlüssel: GitHub-Workflow **LLM experiment** (`.github/workflows/llm-experiment.yml`,
+manuell starten) nutzt das Repository-Secret `OPENROUTER_API_KEY`, rechnet Regel- und
+LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Branch.
+
 ## Dokumentation
 
 - [`docs/01_architekturpruefung.md`](docs/01_architekturpruefung.md) – kritische Prüfung der Architektur, Wahl der Grundlage, Prototyp-Definition

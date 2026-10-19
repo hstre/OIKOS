@@ -69,6 +69,12 @@ government:
 rest_of_world:
   spending_rate: 0.5   # share of its deposits the rest of the world spends on domestic goods per month
 
+behavior:
+  # rule      : oikos/behavior/rules/household.py
+  # llm_table : decision table built by an LLM, e.g.
+  #             {model: llm_table, table: data/llm_tables/<name>.json}
+  household: {model: rule, table: null}
+
 institutions:
   min_capital_ratio: 0.08
   max_layoff_share_per_month: 0.10

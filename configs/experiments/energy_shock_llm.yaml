@@ -1,0 +1,17 @@
+# Experiment 1 with the household decision taken from an LLM-derived decision
+# table instead of the rule. Same scenarios and seeds as energy_shock.yaml.
+# The table file is built with:
+#   python -m oikos llm-table --model <model> --out data/llm_tables/<name>.json
+# and set below (or overridden by the GitHub workflow).
+name: energy_shock_llm
+base: ../baseline.yaml
+seeds: {first: 1, count: 30}
+reference_scenario: S0_none
+common: {behavior: {household: {model: llm_table, table: data/llm_tables/mistral-small-3.2-24b.json}}}
+scenarios:
+  S0_none:       {policy: {instrument: none}}
+  S1_transfer:   {policy: {instrument: transfer}}
+  S2_subsidy:    {policy: {instrument: subsidy}}
+  S3_investment: {policy: {instrument: investment}}
+control:
+  C0_no_shock:   {shock: {world_price_factor: 1.0}, policy: {instrument: none}}

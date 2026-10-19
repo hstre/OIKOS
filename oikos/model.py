@@ -12,9 +12,9 @@ from __future__ import annotations
 import numpy as np
 
 from .behavior.protocol import Decider
+from .behavior.registry import build_household_model
 from .behavior.rules.bank import LeverageCreditRule
 from .behavior.rules.firm import EnergySupplierRule, FirmPlanningRule
-from .behavior.rules.household import HouseholdBudgetRule
 from .core.ledger import Layout, Ledger
 from .core.physical import PhysicalAccounts
 from .core.rng import Streams
@@ -47,7 +47,7 @@ class Economy:
         self.policy = EnergyPolicy(cfg["policy"], self.H)
         self.inst = cfg["institutions"]
 
-        self.household_model = Decider(models.get("household") or HouseholdBudgetRule(hc["min_energy_share"]))
+        self.household_model = Decider(models.get("household") or build_household_model(cfg))
         self.firm_model = Decider(models.get("firm") or FirmPlanningRule(fc))
         self.energy_model = Decider(models.get("energy") or EnergySupplierRule(ec))
         self.credit_model = Decider(models.get("credit") or LeverageCreditRule(bc["max_debt_to_annual_revenue"]))
@@ -334,8 +334,9 @@ class Economy:
         hobs = {"need_kwh": need, "energy_price": p_hh, "reference_price": self.p_ref,
                 "deposits": L.deposits[:H], "net_income": net_income.astype(float),
                 "wealth_before_income": wealth_before_income.astype(float),
-                "c_income": self.c_income, "c_wealth": self.c_wealth, "elasticity": self.elasticity}
-        hdec = self.household_model(hobs, HouseholdBudgetRule.action_space(hobs), self.streams.get("household", t))
+                "c_income": self.c_income, "c_wealth": self.c_wealth, "elasticity": self.elasticity,
+                "employed": (self.employer >= 0).astype(float), "income_quintile": self.quintile.astype(float)}
+        hdec = self.household_model(hobs, self.household_model.model.action_space(hobs), self.streams.get("household", t))
         e_kwh = hdec["energy_kwh"]
         e_pay = np.minimum(_floor_int(e_kwh * p_hh), L.deposits[:H])
         L.pay(np.arange(H), energy_ids[self.supplier], e_pay, "energy_households")
@@ -554,5 +555,6 @@ class Economy:
             m = d.model.meta
             out[name] = {"model": m.name, "version": m.version, "kind": m.kind, "calls": d.stats.calls,
                          "agent_decisions": d.stats.agents, "seconds": round(d.stats.seconds, 4),
-                         "invalid_actions": d.stats.invalid_actions}
+                         "invalid_actions": d.stats.invalid_actions, "params": dict(m.params),
+                         "table_fallbacks": int(getattr(d.model, "fallbacks", 0))}
         return out

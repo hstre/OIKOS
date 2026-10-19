@@ -114,6 +114,8 @@ class MyHouseholdModel:
 eco = Economy(cfg, seed=1, models={"household": MyHouseholdModel()})
 ```
 
+Über die Konfiguration (`behavior.household`) stehen derzeit `rule` und `llm_table` zur Wahl. `llm_table` (`oikos/behavior/llm/household_table.py`) liest eine Entscheidungstabelle, die ein LLM einmal pro Situationszelle befüllt hat. Die Tabelle moduliert die individuelle Entscheidung (Energie = Bedarf × (1 + Änderung), Konsumbudget = Regelbudget × (1 + Änderung)). Die Preiselastizität der Regel wird dabei ersetzt, Bedarf und Konsumneigungen bleiben individuell. Die Zelleinteilung ist eine Näherung, deren Einfluss noch gemessen werden muss. Prompt, Schema, Modell-ID, die tatsächlich antwortenden Modelle, Tokens und Kosten stehen in der Tabellendatei.
+
 Die Simulation prüft die Aktionen gegen den Aktionsraum, zählt Aufrufe, Einzelentscheidungen, Laufzeit und ungültige Aktionen und schreibt sie ins Manifest.
 
 ## 9. Abweichungen von der Planung (01_architekturpruefung.md)

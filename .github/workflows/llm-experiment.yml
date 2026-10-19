@@ -1,0 +1,72 @@
+# Builds an LLM decision table for households via OpenRouter and runs the
+# energy shock experiment with it and with the rule-based model on the same
+# seeds. Results and the table are committed back to the branch the
+# workflow runs on. Costs are capped by `max_cost_usd` (table building only;
+# the simulations themselves run offline).
+name: LLM experiment
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: OpenRouter model id
+        default: mistralai/mistral-small-3.2-24b-instruct
+        required: true
+      seeds:
+        description: Number of seeds per scenario
+        default: "30"
+        required: true
+      max_cost_usd:
+        description: Upper limit for API costs of the table (USD)
+        default: "1.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MODEL: ${{ inputs.model }}
+      SEEDS: ${{ inputs.seeds }}
+      MAX_COST: ${{ inputs.max_cost_usd }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Tests
+        run: python -m pytest -q
+      - name: Build decision table
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          NAME=$(printf '%s' "$MODEL" | tr '/:' '__')
+          echo "NAME=$NAME" >> "$GITHUB_ENV"
+          python -m oikos llm-table --model "$MODEL" --out "data/llm_tables/$NAME.json" --max-cost-usd "$MAX_COST"
+      - name: Run experiment (rule-based households)
+        run: python -m oikos run configs/experiments/energy_shock.yaml --seeds "$SEEDS" --out "results/energy_shock_rule_s$SEEDS"
+      - name: Run experiment (LLM decision table)
+        run: |
+          python -m oikos run configs/experiments/energy_shock_llm.yaml --seeds "$SEEDS" \
+            --override "{behavior: {household: {model: llm_table, table: data/llm_tables/$NAME.json}}}" \
+            --out "results/energy_shock_llm_$NAME"
+          python -m oikos compare "results/energy_shock_rule_s$SEEDS" "results/energy_shock_llm_$NAME"
+      - name: Commit table and results
+        run: |
+          git config user.name "oikos-bot"
+          git config user.email "oikos-bot@users.noreply.github.com"
+          git add data/llm_tables results
+          git commit -m "LLM experiment: $MODEL, $SEEDS seeds" || echo "nothing to commit"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: llm-experiment
+          path: |
+            data/llm_tables
+            results
