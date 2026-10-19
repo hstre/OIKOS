@@ -15,7 +15,7 @@ from pathlib import Path
 import pandas as pd
 
 from ..config import deep_merge, load_experiment, load_yaml
-from .runner import run_one, scenario_configs
+from .runner import _git, run_one, scenario_configs
 from .summary import summarize_run
 
 
@@ -73,7 +73,12 @@ def _sign(x: float, tol: float) -> int:
 def _write_report(spec: dict, eff: pd.DataFrame, out: Path, seconds: float, runs: int) -> None:
     variants = list(spec["variants"])
     md = [f"# Sensitivität: {spec['name']}", "",
-          f"{runs} Läufe, {seconds:.0f} s. Je Variante wird eine Annahme geändert; alle Szenarien und Seeds bleiben gleich.",
+          f"{runs} Läufe, {seconds:.0f} s, Code `{_git('rev-parse', 'HEAD')[:12]}`"
+          + (" (mit uncommitteten Änderungen)" if _git("status", "--porcelain", "--untracked-files=no") else "")
+          + ". Je Variante wird eine Annahme geändert; alle Szenarien und Seeds bleiben gleich.",
+          "Absolute Größen (Importe, Staatsschuld) skalieren mit der Populationsgröße; bei den Varianten "
+          "population_* sind nur Vorzeichen vergleichbar. Eine Variante mit identischen Werten wie die Basis "
+          "zeigt einen Parameter, der in diesem Experiment nicht bindet.",
           "Zellen: Median der gepaarten Differenz Szenario − S0 über die Seeds. "
           "**fett** = Vorzeichen weicht von der Basisvariante ab (Toleranz: 5 % des Basisbetrags).", ""]
     for sc in sorted(eff.scenario.unique()):

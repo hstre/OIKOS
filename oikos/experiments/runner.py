@@ -98,7 +98,7 @@ def run_experiment(path: str | Path, out_dir: str | Path, n_seeds: int | None = 
         "experiment_file": str(path),
         "created_unix": int(time.time()),
         "git_commit": _git("rev-parse", "HEAD"),
-        "git_dirty": bool(_git("status", "--porcelain")),
+        "git_dirty": bool(_git("status", "--porcelain", "--untracked-files=no")),
         "python": sys.version.split()[0],
         "numpy": np.__version__,
         "pandas": pd.__version__,

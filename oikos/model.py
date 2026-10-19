@@ -120,7 +120,7 @@ class Economy:
         self.price = np.full(F, self.unit_cost * (1 + fc["initial_markup"]))
         self.inv_value = self.inventory * self.unit_cost
         self.unfilled = np.zeros(F)
-        self.months_without_vacancy = np.zeros(F)
+        self.months_all_filled = np.zeros(F)
         k = int(self.inst["goods_market_visits"])
         self.partners = np.argsort(rng.random((H, F)), axis=1)[:, :k]
         self.e_expected = np.full(E, (q_hh0 + q_firm_guess) / E)
@@ -244,7 +244,7 @@ class Economy:
         obs = {"inventory": self.inventory, "expected_sales": self.expected_sales.astype(float),
                "last_sales": self.last_sales, "markup": self.markup, "wage": self.wage[:F].astype(float),
                "productivity": np.full(F, self.prod), "unfilled_vacancies": self.unfilled,
-               "months_without_vacancy": self.months_without_vacancy}
+               "months_all_filled": self.months_all_filled}
         dec = self.firm_model(obs, self.firm_model.model.action_space(obs), self.streams.get("firm_plan", t))
         self.expected_sales = dec["expected_sales"]
         self.markup = dec["markup"]
@@ -283,7 +283,7 @@ class Economy:
         if (staff > affordable).any():
             raise RuntimeError("employer holds more workers than it can pay")
         self.unfilled = unfilled[:F].astype(float)
-        self.months_without_vacancy = np.where(unfilled[:F] > 0, 0, self.months_without_vacancy + 1)
+        self.months_all_filled = np.where(unfilled[:F] > 0, 0, self.months_all_filled + 1)
 
         # ---- 6 production; firms buy energy
         output = staff[:F] * self.prod
@@ -497,7 +497,7 @@ class Economy:
             self.expected_sales[exits] = float(self.expected_sales[ref].mean())
             self.last_sales[exits] = self.expected_sales[exits]
             self.unfilled[exits] = 0
-            self.months_without_vacancy[exits] = 0
+            self.months_all_filled[exits] = 0
             self.cum["firm_exits"] += exits.size
 
         # ---- 14 government debt management, fiscal memory

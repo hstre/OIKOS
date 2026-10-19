@@ -63,7 +63,7 @@ class FirmPlanningRule:
         uw = rng.uniform(0.0, self.wage_step, n)
         wage = obs["wage"].astype(float)
         wage = np.where(obs["unfilled_vacancies"] > 0, wage * (1 + uw), wage)
-        wage = np.where(obs["months_without_vacancy"] >= self.wage_rigidity_months, wage * (1 - uw), wage)
+        wage = np.where(obs["months_all_filled"] >= self.wage_rigidity_months, wage * (1 - uw), wage)
         return {"expected_sales": expected, "target_workers": target, "markup": markup, "wage": wage}
 
 
