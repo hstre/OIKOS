@@ -44,6 +44,7 @@ Ergebnisse landen in `results/<experiment>/` (`report.md`, Grafiken, `summary.cs
 
 - [`docs/01_architekturpruefung.md`](docs/01_architekturpruefung.md) – kritische Prüfung der Architektur, Wahl der Grundlage, Prototyp-Definition
 - [`docs/02_modell_v0_1.md`](docs/02_modell_v0_1.md) – Modellbeschreibung v0.1: Bilanzen, Periodenablauf, Regeln, Annahmen, Grenzen
+- [`docs/03_ergebnisse_experiment1.md`](docs/03_ergebnisse_experiment1.md) – Auswertung Experiment 1 mit Grenzen und nächsten Schritten
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 
