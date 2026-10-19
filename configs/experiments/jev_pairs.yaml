@@ -1,0 +1,80 @@
+# Controlled paired test of the Jev budget question (observation only, no
+# economy involved). PRE-REGISTERED: this file and docs/07_jev_paartest.md were
+# committed before any request was sent. The question text, options, cases and
+# decision criteria must not be changed after seeing results; a follow-up is a
+# new, separately registered test.
+name: jev_pairs_v1
+out: results/jev_pairs
+jev:
+  model: typesafe/jev-1.14
+  endpoint: https://openrouter.ai/api/alpha/decisions
+  timeout_s: 30
+  retries: 2
+limits:
+  cost_usd: 0.01
+  max_requests: 80
+
+# Same instructions as in all earlier runs (question about likely behaviour).
+question: original
+
+context: >-
+  A private household in a stylised European economy. All amounts are euro per month.
+  The energy bill for this month is already fixed. The household is a constructed test case.
+
+# Base household; every case starts from it and changes exactly one feature.
+base:
+  employment: employed
+  net_income_this_month_eur: 2400
+  savings_before_this_months_income_eur: 6000
+  energy_price_now_ct_per_kwh: 9.0
+  energy_price_usually_paid_ct_per_kwh: 9.0
+  energy_bill_this_month_eur: 150
+  # money_available_after_energy_bill_eur is derived: savings + income - energy bill
+
+# Fixed euro options, identical for both cases of a pair and for all pairs.
+# Only euro amounts, no percentages. Every option is affordable in every case
+# (smallest money available after the energy bill: 2 750 EUR in P2_low).
+options_eur: [1200, 1500, 1800, 2100, 2400]
+
+# Presentations: 5 orders forming a Latin square (each amount once at each
+# position) and neutral two-letter identifiers whose assignment to amounts also
+# rotates, so that neither position nor identifier is tied to an amount.
+presentations:
+  count: 5
+  identifiers: [kq, zt, vx, pw, hj]
+  repeat_presentation: 0   # every case is asked once more with presentation 0 (noise estimate)
+
+pairs:
+  P0_placebo:
+    feature: street name (economically irrelevant)
+    A: {street: Lindenstrasse}
+    B: {street: Birkenweg}
+  P1_job_security:
+    feature: expected job security
+    A: {job_outlook: "secure: permanent contract, no layoffs expected"}
+    B: {job_outlook: "uncertain: the employer has announced layoffs; the main earner may lose the job within the next three months"}
+  P2_savings:
+    feature: savings
+    A: {savings_before_this_months_income_eur: 500}
+    B: {savings_before_this_months_income_eur: 30000}
+  P3_last_month_spending:
+    feature: last month's spending on other goods and services
+    A: {spending_on_other_goods_and_services_last_month_eur: 1500}
+    B: {spending_on_other_goods_and_services_last_month_eur: 2300}
+  P4_energy_price:
+    feature: energy price shock (price and resulting bill)
+    A: {energy_price_now_ct_per_kwh: 9.0, energy_bill_this_month_eur: 150}
+    B: {energy_price_now_ct_per_kwh: 18.0, energy_bill_this_month_eur: 300}
+  P5_income:
+    feature: net income this month
+    A: {net_income_this_month_eur: 1800}
+    B: {net_income_this_month_eur: 3200}
+
+# Decision rule (fixed in advance). Primary measure per presentation j:
+#   delta_j = weighted_eur(B, j) - weighted_eur(A, j),  weighted_eur = sum(score * amount)
+#   noise_eur = median over all cases of |weighted_eur(repeat) - weighted_eur(presentation 0)|
+# "consistently distinguished" if delta_j has the same sign in all 5 presentations
+# AND |median_j delta_j| > 2 * noise_eur; otherwise "not consistently distinguished".
+criteria:
+  sign_agreement_required: 5
+  noise_multiple: 2.0
