@@ -2,6 +2,8 @@
 
 Stand: 2026-10-19 · GitHub-Actions-Run 39332087964 · Code `4023d2a` · Rohdaten: `results/jev_robustness/` (je Test eine JSONL-Datei mit Anfrage, Antwort, Modellstand, Kosten, gezeigter Reihenfolge), Replay: `results/jev_robustness_replay/`
 
+> Präzisiert am 2026-10-19: Ausgabenquote und absolute Ausgaben getrennt (Abschnitt 6); Deutung von T3 offen.
+>
 > Nur Beobachtungsmodus. Die Wirtschaft wurde nicht verändert und Jev hat nichts gesteuert. Alle Tests verwenden dieselben 48 Haushaltszustände wie der erste Lauf; die Zustände wurden aus dem Regellauf rekonstruiert und bytegleich gegen die gespeicherten Anfragen geprüft. Je Test wurde genau ein Faktor verändert. Jevs Scores sind modellinterne Werte, keine empirischen Entscheidungswahrscheinlichkeiten. Übereinstimmung mit der Regel ist kein Kriterium.
 
 ## Ablauf und Kosten
@@ -64,9 +66,9 @@ Nach **Kennung bzw. Betrag** ergibt das in T1: b1 (60 %) 0,20, b2 (75 %) 0,31, b
 
 Ohne Prozentangaben verschiebt sich die Masse ebenfalls nach oben: score-gewichtet 80 % statt 72 %, TVD 0,25. Die Angabe „about 60 % of the income …“ zieht die Antworten also nach unten. Die Prozentwerte sind eine Umrechnung derselben Information; eine Reaktion darauf ist eine Reaktion auf die Darstellung.
 
-### 4. Vormonatsausgaben (T3): starke Reaktion auf eine Information
+### 4. Vormonatsausgaben (T3): starke Reaktion, Deutung offen
 
-Mit den Vormonatsausgaben aus dem Regellauf liegt die Masse bei 90 %, mit dem größten Abstand aller Tests (TVD 0,63). Diese Ausgaben entsprechen im Median 100 % des Einkommens nach Energie. Jevs score-gewichtetes Budget liegt im Median bei 91 % dieses Vormonatswerts. Jev verankert sich also stark an der vorgegebenen Geschichte. Ob das „Gewohnheit“ abbildet oder bloß einen Ankerwert übernimmt, lässt sich hier nicht unterscheiden.
+Mit den Vormonatsausgaben aus dem Regellauf liegt die Masse bei 90 %, mit dem größten Abstand aller Tests (TVD 0,63). Diese Ausgaben entsprechen im Median 100 % des Einkommens nach Energie. Jevs score-gewichtetes Budget liegt im Median bei 91 % dieses Vormonatswerts. Jevs Antwort richtet sich also stark nach der vorgegebenen Geschichte. **Offen** ist, ob das eine Gewohnheitsreaktion ist (Haushalte halten ihr Ausgabenniveau) oder ein Ankereffekt (eine genannte Zahl zieht die Antwort an). Beide Deutungen sagen hier dieselbe Richtung voraus; der Test kann sie nicht unterscheiden.
 
 Innerhalb von T3 korreliert die Antwort nicht positiv mit der Höhe der individuellen Vormonatsausgabe (Korrelation der Anteile −0,30). Die Verschiebung betrifft also das Niveau, nicht die Feinabstimmung je Haushalt.
 
@@ -79,12 +81,15 @@ Die Vormonatsausgaben sind **synthetische Modellgeschichte, keine empirischen Ha
 - Die Antworten sammeln sich also **nicht** am unteren Rand. Sie wandern aber mit dem angebotenen Bereich nach unten, etwa um 12 Prozentpunkte.
 - Im ursprünglichen Angebot lag die meiste Masse auf den beiden untersten Optionen. Das war zum Teil eine Folge dieses Angebots, nicht nur eine Aussage über das gewünschte Budget.
 
-### 6. Reaktion auf die Lage des Haushalts
+### 6. Reaktion auf die Lage des Haushalts: was diese Daten zeigen können und was nicht
 
-- **Kaum Reaktion:** In keinem Test unterscheiden sich die Antworten nennenswert zwischen Monaten mit und ohne Energiepreisschock, zwischen Ersparnissen unter und über dem Median oder zwischen Erwerbstätigen und Erwerbslosen.
-  - Die Streuung des score-gewichteten Anteils über die 48 Haushalte beträgt nur etwa 2 Prozentpunkte (Standardabweichung 0,023).
-  - Die Erwerbslosen (n = 7) liegen eher etwas höher, nicht niedriger.
-- **Eine reproduzierte Korrelation:** Der Anteil korreliert positiv mit dem Energiekostenanteil am Einkommen (0,49 im Original, 0,48 in T5). Eine mögliche Lesart: Jev senkt das Eurobudget weniger als eins zu eins mit der Energierechnung. Bei 2 Prozentpunkten Spannweite und 48 Fällen ist das aber ein schwacher Hinweis.
+Ausgabenquote und absolute Ausgaben sind zu unterscheiden. Die Optionen waren als Anteile des Einkommens nach Energie konstruiert (60 % … 110 %). Damit skalieren alle angebotenen Eurobeträge bereits mit dem Einkommen:
+
+- **Absolute Ausgaben:** Jevs score-gewichtetes Eurobudget reicht von 1 249 € bis 6 609 € (Median 1 535 €) und steigt fast proportional mit dem Einkommen nach Energie (log-log-Steigung 0,99, Korrelation mit dem Nettoeinkommen 1,00). Diese Proportionalität ist **durch die Optionen vorgegeben**: Schon die niedrigste Option hat die Steigung 1,00. Über die Einkommensreaktion sagt dieses Ergebnis deshalb nichts aus.
+- **Ausgabenquote:** Die Quote (Budget relativ zum Einkommen nach Energie) ist nahezu konstant (Standardabweichung über die 48 Haushalte 0,023). Wegen der proportionalen Optionen ist eine konstante Quote mit sehr unterschiedlichen absoluten Reaktionen vereinbar. Sie belegt **keine** fehlende Reaktion auf das Einkommen.
+- **Andere Merkmale:** Auch Unterschiede nach Ersparnis, Erwerbsstatus und Energiepreisschock sind in diesem Aufbau nur als Quote messbar, und die Quote unterscheidet sich zwischen diesen Gruppen kaum. Im Schock sind die Eurobudgets im Median etwas niedriger (1 518 € gegenüber 1 539 €), weil das Einkommen nach Energie niedriger ist (2 119 € gegenüber 2 146 €), nicht wegen einer anderen Quote.
+- **Beobachtungsdaten statt Experiment:** Die 48 Haushalte unterscheiden sich in mehreren Merkmalen zugleich (Einkommen, Ersparnis, Energierechnung, Erwerbsstatus), und die Gruppen sind klein (Erwerbslose n = 7). Ob Jev einzelne Informationen unterscheiden kann, lässt sich damit nicht feststellen. Dafür ist ein kontrollierter Test mit festen Eurooptionen und gezielt variierten Merkmalen nötig (`07_jev_paartest.md`).
+- **Eine reproduzierte Korrelation:** Die Quote korreliert positiv mit dem Energiekostenanteil am Einkommen (0,49 im Original, 0,48 in T5). Eine mögliche Lesart: Jev senkt das Eurobudget weniger als eins zu eins mit der Energierechnung. Bei 2 Prozentpunkten Spannweite und 48 Fällen ist das ein schwacher Hinweis.
 
 ## Zusammenfassung
 
@@ -93,15 +98,15 @@ Die Vormonatsausgaben sind **synthetische Modellgeschichte, keine empirischen Ha
 | Sind Jevs Antworten wiederholbar? | weitgehend: kleine Score-Schwankungen (TVD ≈ 0,04), bei knappen Fällen kippt die Wahl (19 %) | mittel (eine Wiederholung) |
 | Reagiert Jev auf die Darstellung? | ja, deutlich: Reihenfolge (TVD 0,32), Prozentangaben (0,25), Optionsbereich (−12 Pp.) | hoch für diese Frage und diesen Modellstand |
 | Sammeln sich die Antworten am unteren Rand? | nein; sie verschieben sich aber mit dem Angebot | mittel |
-| Reagiert Jev auf Informationen über den Haushalt? | auf Einkommen, Ersparnis, Erwerbsstatus und Energiepreis kaum; stark auf vorgegebene Vormonatsausgaben (Ankerwert) | mittel; n = 48, Gruppen klein |
+| Reagiert Jev auf Informationen über den Haushalt? | mit diesem Aufbau nicht feststellbar: Einkommensreaktion durch proportionale Optionen verdeckt; Quote nach Ersparnis, Erwerbsstatus, Energiepreis kaum verschieden (beobachtet, nicht kontrolliert); stark auf vorgegebene Vormonatsausgaben (Gewohnheit oder Anker, offen) | gering; n = 48, Merkmale nicht getrennt variiert |
 
-**Insgesamt:** In dieser Form wird Jevs Antwort auf die Budgetfrage stärker von der Darstellung der Frage und von vorgegebenen Ankerwerten bestimmt als von der wirtschaftlichen Lage des Haushalts. Damit ist die Frage in dieser Form keine tragfähige Grundlage für einen Steuerungsmodus.
+**Insgesamt:** Für diese Frageform ist belegt, dass die Darstellung (Reihenfolge, Prozentangaben, Optionsbereich) die Antwort deutlich verschiebt, um ein Mehrfaches des Rauschens. Ob Jev wirtschaftliche Informationen über den Haushalt unterscheiden kann, ist mit diesem Aufbau **nicht entschieden**: Die Optionen skalierten mit dem Einkommen, und die Merkmale wurden nicht getrennt variiert. Die Frage in dieser Form ist keine tragfähige Grundlage für einen Steuerungsmodus.
 
 ## Verbleibende Unsicherheit
 
 - **Begrenzte Daten:** ein Modellstand, ein Seed, 48 Zustände, je Test eine Abfrage. Gruppenvergleiche stehen auf sehr kleinen Zahlen (Erwerbslose n = 7).
 - **Kennungseffekte** sind nicht getrennt. In T1 blieben b1…b5 an die Beträge gebunden, in T4 bezeichnen dieselben Kennungen andere Beträge.
-- **Verankerung oder Gewohnheit?** Ob T3 eine plausible Gewohnheitsreaktion oder eine reine Ankerübernahme zeigt, ist offen. Der Wert stammt aus dem Regellauf und ist selbst nicht empirisch.
+- **Gewohnheit oder Anker?** Ob T3 eine Gewohnheitsreaktion oder einen Ankereffekt zeigt, bleibt offen; beide sagen dieselbe Richtung voraus. Der Wert stammt aus dem Regellauf und ist selbst nicht empirisch.
 - **Darstellungseffekte könnten sich überlagern.** Reihenfolge, Prozentangaben und Bereich wirken in dieselbe Richtung. Wie stark sie zusammen wirken, ist nicht getestet.
 - **Kein Bezug zu echtem Verhalten:** Kein Ergebnis sagt, welche Budgetwahl realistischer ist. Dafür braucht es empirische Referenzen wie Konsumquoten nach Gruppen. Das gehört zur separaten Arbeit an den Haushaltsprofilen.
 
