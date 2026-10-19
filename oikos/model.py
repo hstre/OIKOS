@@ -81,6 +81,7 @@ class Economy:
         self.elasticity = np.clip(rng.normal(el["mean"], el["sd"], H), el["low"], el["high"])
         self.supplier = rng.integers(0, E, H)
         self.capital_income = np.zeros(H, dtype=np.int64)
+        self.last_goods_spending = np.zeros(H)
         self.net_income = np.zeros(H, dtype=np.int64)
         self.income_hist = np.zeros((12, H), dtype=np.int64)
         self.quintile = np.zeros(H, dtype=np.int64)
@@ -377,6 +378,7 @@ class Economy:
         revenue[:F] += np.bincount(s, weights=pay, minlength=F)
         goods_hh = np.bincount(b, weights=q, minlength=H)
         spend_hh = np.bincount(b, weights=pay, minlength=H)
+        self.last_goods_spending = spend_hh  # read-only record for observation tools
         unsatisfied = budgets - spend_hh > 0.01 * np.maximum(budgets, 1)
         sold_out = stock <= 1e-9 * np.maximum(self.inventory, 1.0)
         self.partners = goods_market.update_partners(

@@ -161,9 +161,12 @@ class JevBudgetObserver:
         with open(self.log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
 
+    @staticmethod
+    def sample(n: int, per_month: int, rng: np.random.Generator) -> np.ndarray:
+        return np.sort(rng.choice(n, size=min(per_month, n), replace=False))
+
     def observe(self, t: int, obs: dict, decision: dict, rng: np.random.Generator) -> None:
-        n = len(obs["deposits"])
-        sample = np.sort(rng.choice(n, size=min(self.per_month, n), replace=False))
+        sample = self.sample(len(obs["deposits"]), self.per_month, rng)
         for i in sample:
             if self.n_requests >= self.max_decisions:
                 raise RuntimeError("decision limit reached")  # cannot happen given the checks above

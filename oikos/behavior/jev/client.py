@@ -64,8 +64,26 @@ def canonical(obj) -> bytes:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
+def _ordered(obj, keep_order: bool = False):
+    """Sort all object keys, except the options of a question ("criteria"),
+    whose order is part of the question as shown to the model."""
+    if isinstance(obj, dict):
+        items = obj.items() if keep_order else sorted(obj.items())
+        return {k: _ordered(v, keep_order=(k == "criteria")) for k, v in items}
+    if isinstance(obj, list):
+        return [_ordered(v) for v in obj]
+    return obj
+
+
+def wire(body: dict) -> bytes:
+    """Exact bytes sent to the API. Identical to `canonical` whenever the
+    options are listed in sorted order (as in all requests before
+    the order tests), so earlier logs and hashes stay valid."""
+    return json.dumps(_ordered(body), separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
 def request_hash(body: dict) -> str:
-    return hashlib.sha256(canonical(body)).hexdigest()
+    return hashlib.sha256(wire(body)).hexdigest()
 
 
 @dataclass
@@ -134,7 +152,7 @@ class JevClient:
                          model_requested=body.get("model"))
         headers = {"Authorization": f"Bearer {self._key}", "Content-Type": "application/json",
                    "X-Title": "OIKOS"}
-        data = canonical(body)
+        data = wire(body)
         t0 = time.perf_counter()
         for attempt in range(self.retries + 1):
             rec.attempts = attempt + 1

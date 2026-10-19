@@ -54,6 +54,13 @@ def main() -> None:
     jo.add_argument("--mode", choices=["live", "replay"], default=None)
     jo.add_argument("--replay-log", default=None)
     jo.add_argument("--out", default=None)
+    jr = sub.add_parser("jev-robustness", help="observation-only robustness tests of the Jev budget question")
+    jr.add_argument("--spec", default="configs/experiments/jev_observe.yaml")
+    jr.add_argument("--original-log", default="results/jev_observe/jev_log.jsonl")
+    jr.add_argument("--out", default="results/jev_robustness")
+    jr.add_argument("--cost-limit-usd", type=float, default=0.01)
+    jr.add_argument("--mode", choices=["live", "replay"], default="live")
+    jr.add_argument("--replay-dir", default=None)
     args = ap.parse_args()
 
     if args.cmd == "run":
@@ -74,6 +81,23 @@ def main() -> None:
         from .experiments.compare import compare
 
         print(compare(args.dir_a, args.dir_b))
+    elif args.cmd == "jev-robustness":
+        import json as _json
+        import sys
+
+        from .behavior.jev.client import MissingKeyError
+        from .experiments.jev_robustness import run_tests
+
+        try:
+            r = run_tests(args.spec, args.original_log, args.out, args.cost_limit_usd,
+                          mode=args.mode, replay_dir=args.replay_dir)
+        except MissingKeyError as e:
+            sys.exit(f"Jev: {e}. Set it in the execution environment, never in files or Git.")
+        show = {t: {k: v[k] for k in ("requests_sent", "skipped_cost_limit", "errors_by_kind", "cost_usd")}
+                for t, v in r["tests"].items()}
+        print(_json.dumps({"cost_usd_total": r["cost_usd_total"], **show}, indent=2))
+        bad = any(v["errors_by_kind"] for v in r["tests"].values())
+        sys.exit(1 if bad else 0)
     elif args.cmd in ("jev-ping", "jev-observe"):
         import json as _json
         import sys
