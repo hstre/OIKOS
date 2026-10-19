@@ -62,6 +62,10 @@ class DecisionModel(Protocol):
     ) -> DecisionBatch: ...
 
 
+class DecisionShapeError(ValueError):
+    """A decision model returned missing actions or arrays of the wrong length."""
+
+
 @dataclass
 class CallStats:
     calls: int = 0
@@ -87,8 +91,14 @@ class Decider:
         self.stats.calls += 1
         self.stats.agents += n
         checked: DecisionBatch = {}
+        missing = [name for name in space if name not in out]
+        if missing:
+            raise DecisionShapeError(f"{self.model.meta.name}: actions {missing} missing")
         for name, box in space.items():
             a = np.asarray(out[name], dtype=float)
+            if a.shape != (n,):
+                # never broadcast: a wrong length means the model answered for other agents
+                raise DecisionShapeError(f"{self.model.meta.name}: action {name!r} has shape {a.shape}, expected ({n},)")
             ok = box.valid(a)
             bad = int((~ok).sum())
             if bad:

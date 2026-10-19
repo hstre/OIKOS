@@ -1,0 +1,19 @@
+# Jev observation run (household goods budget). The v0.1 rules control the
+# economy; Jev answers the same decision for a small sample and is logged.
+# At most 50 decisions per run (hard limit in code).
+name: jev_observe_household_budget
+base: ../baseline.yaml
+seed: 1
+scenario: {policy: {instrument: none}}     # S0: energy shock, no policy response
+out: results/jev_observe
+jev:
+  mode: live                    # live | replay
+  model: typesafe/jev-1.14      # pinned version; the response names the dated snapshot
+  endpoint: https://openrouter.ai/api/alpha/decisions
+  timeout_s: 30
+  retries: 2                    # only on connection errors, HTTP 429 and 5xx
+  months: [-1, 3, 12, 30]       # before the shock, early and late in the shock, after it
+  households_per_month: 12      # 4 x 12 = 48 decisions
+  max_decisions: 50
+  budget_fractions: [0.6, 0.75, 0.9, 1.0, 1.1]   # of the income left after the energy bill
+  replay_log: null

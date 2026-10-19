@@ -51,6 +51,8 @@ class Economy:
         self.firm_model = Decider(models.get("firm") or FirmPlanningRule(fc))
         self.energy_model = Decider(models.get("energy") or EnergySupplierRule(ec))
         self.credit_model = Decider(models.get("credit") or LeverageCreditRule(bc["max_debt_to_annual_revenue"]))
+        # Observation only: sees the household decision, never changes it.
+        self.household_observer = models.get("household_observer")
 
         self.t = -int(cfg["simulation"]["burn_in_months"])
         self.t_end = int(cfg["simulation"]["horizon_months"])
@@ -337,6 +339,10 @@ class Economy:
                 "c_income": self.c_income, "c_wealth": self.c_wealth, "elasticity": self.elasticity,
                 "employed": (self.employer >= 0).astype(float), "income_quintile": self.quintile.astype(float)}
         hdec = self.household_model(hobs, self.household_model.model.action_space(hobs), self.streams.get("household", t))
+        if self.household_observer is not None and self.household_observer.wants(t):
+            self.household_observer.observe(t, {k: np.array(v, copy=True) for k, v in hobs.items()},
+                                            {k: v.copy() for k, v in hdec.items()},
+                                            self.streams.get("jev_sample", t))
         e_kwh = hdec["energy_kwh"]
         e_pay = np.minimum(_floor_int(e_kwh * p_hh), L.deposits[:H])
         L.pay(np.arange(H), energy_ids[self.supplier], e_pay, "energy_households")

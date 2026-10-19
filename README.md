@@ -40,6 +40,20 @@ python -m oikos sensitivity configs/experiments/energy_shock_sensitivity.yaml
 Ergebnisse landen in `results/<experiment>/` (`report.md`, Grafiken, `summary.csv`,
 `paired_differences.csv`, `manifest.json`).
 
+## Jev-Anbindung (Beobachtungsmodus)
+
+Jev (TypeSafe), ein System-One-Entscheidungsmodell, beantwortet über die OpenRouter-Decisions-API
+eine einzelne Haushaltsentscheidung: die Wahl zwischen fünf vorgegebenen Konsumbudgets. Die
+v0.1-Regel steuert weiterhin die Wirtschaft; Jevs Antworten werden mit Anfrage, Antwort,
+Modellversion, Kosten und Latenz protokolliert und lassen sich ohne Netz wiederholen. Höchstens
+50 Entscheidungen pro Lauf. Details, Fehlerbehandlung und Ablage des Schlüssels:
+[`docs/04_jev_anbindung.md`](docs/04_jev_anbindung.md).
+
+```bash
+python -m oikos jev-ping       # eine Testanfrage
+python -m oikos jev-observe    # Beobachtungslauf (Schlüssel aus OPENROUTER_API_KEY)
+```
+
 ## LLM-Entscheidungstabelle (v0.2-Vorstufe)
 
 Die Haushaltsentscheidung kann statt durch die Regel durch eine **LLM-erzeugte
@@ -67,6 +81,7 @@ LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Br
 - [`docs/01_architekturpruefung.md`](docs/01_architekturpruefung.md) – kritische Prüfung der Architektur, Wahl der Grundlage, Prototyp-Definition
 - [`docs/02_modell_v0_1.md`](docs/02_modell_v0_1.md) – Modellbeschreibung v0.1: Bilanzen, Periodenablauf, Regeln, Annahmen, Grenzen
 - [`docs/03_ergebnisse_experiment1.md`](docs/03_ergebnisse_experiment1.md) – Auswertung Experiment 1 mit Grenzen und nächsten Schritten
+- [`docs/04_jev_anbindung.md`](docs/04_jev_anbindung.md) – Jev-Adapter, Beobachtungsmodus, Fehlerbehandlung, Replay, Schlüsselablage
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 

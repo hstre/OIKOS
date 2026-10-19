@@ -4,6 +4,8 @@
     python -m oikos report <experiment-dir>
     python -m oikos llm-table --model <openrouter-model-id> --out <table.json> [--max-cost-usd X]
     python -m oikos compare <experiment-dir-A> <experiment-dir-B>
+    python -m oikos jev-ping [--spec configs/experiments/jev_observe.yaml]
+    python -m oikos jev-observe [--spec ...] [--mode live|replay] [--replay-log LOG] [--out DIR]
 """
 
 from __future__ import annotations
@@ -44,6 +46,14 @@ def main() -> None:
     cmp_ = sub.add_parser("compare", help="compare scenario effects of two experiment directories")
     cmp_.add_argument("dir_a")
     cmp_.add_argument("dir_b")
+    jp = sub.add_parser("jev-ping", help="one real Jev request with a fixed example household")
+    jp.add_argument("--spec", default="configs/experiments/jev_observe.yaml")
+    jp.add_argument("--out", default="results/jev_observe/ping.json")
+    jo = sub.add_parser("jev-observe", help="observation run: rules control, Jev is logged (max 50 decisions)")
+    jo.add_argument("--spec", default="configs/experiments/jev_observe.yaml")
+    jo.add_argument("--mode", choices=["live", "replay"], default=None)
+    jo.add_argument("--replay-log", default=None)
+    jo.add_argument("--out", default=None)
     args = ap.parse_args()
 
     if args.cmd == "run":
@@ -64,6 +74,28 @@ def main() -> None:
         from .experiments.compare import compare
 
         print(compare(args.dir_a, args.dir_b))
+    elif args.cmd in ("jev-ping", "jev-observe"):
+        import json as _json
+        import sys
+
+        from .behavior.jev.client import MissingKeyError
+        from .experiments.jev_observe import ping, run_observation
+
+        try:
+            if args.cmd == "jev-ping":
+                r = ping(args.spec, args.out)
+                show = {k: r.get(k) for k in ("status", "http_status", "error_kind", "error", "model_served",
+                                              "provider", "input_tokens", "cost_usd", "latency_s", "parsed")}
+            else:
+                r = run_observation(args.spec, args.out, args.mode, args.replay_log)
+                show = {k: r[k] for k in ("mode", "requests", "ok", "errors", "errors_by_kind", "models_served",
+                                          "cost_usd_total", "latency_s_median", "same_option_as_rule_share",
+                                          "economy_unchanged_by_observation")}
+        except MissingKeyError as e:
+            sys.exit(f"Jev: {e}. Set it in the execution environment, never in files or Git.")
+        print(_json.dumps(show, indent=2, ensure_ascii=False))
+        failed = show.get("status") == "error" or show.get("errors")
+        sys.exit(1 if failed else 0)
     else:
         print(build_report(args.directory))
 

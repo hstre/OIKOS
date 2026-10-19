@@ -1,0 +1,62 @@
+# Jev observation run. Uses the repository secret OPENROUTER_API_KEY; the key
+# exists only as an environment variable of the two Jev steps. GitHub masks it
+# in logs; OIKOS never writes it to files.
+#
+# Order: tests -> one test request (ping) -> at most 50 observed decisions ->
+# replay check without network -> commit log, summary and report to the branch.
+#
+# Start: Actions tab ("Run workflow", once this file is on the default branch)
+# or by pushing a branch named jev-run/<anything>.
+name: Jev observation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["jev-run/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jev-observe
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Tests (simulated API responses only)
+        run: python -m pytest -q
+      - name: Jev test request
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m oikos jev-ping --out results/jev_observe/ping.json
+      - name: Jev observation (max. 50 decisions)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m oikos jev-observe --mode live --out results/jev_observe
+      - name: Replay check (no network, no key)
+        if: always()
+        run: |
+          python -m oikos jev-observe --mode replay --replay-log results/jev_observe/jev_log.jsonl \
+            --out results/jev_observe_replay
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "oikos-bot"
+          git config user.email "oikos-bot@users.noreply.github.com"
+          git add results/jev_observe results/jev_observe_replay || true
+          git commit -m "Jev observation run (${GITHUB_RUN_ID})" || echo "nothing to commit"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jev-observe
+          path: results/jev_observe*

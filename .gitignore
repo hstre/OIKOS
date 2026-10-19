@@ -7,3 +7,4 @@ build/
 # large raw outputs; reports, figures, summaries and manifests are committed
 results/**/monthly.csv.gz
 results/**/sensitivity_summary.csv
+.env
