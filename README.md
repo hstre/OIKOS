@@ -84,6 +84,7 @@ LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Br
 - [`docs/04_jev_anbindung.md`](docs/04_jev_anbindung.md) – Jev-Adapter, Beobachtungsmodus, Fehlerbehandlung, Replay, Schlüsselablage
 - [`docs/05_jev_beobachtung_lauf1.md`](docs/05_jev_beobachtung_lauf1.md) – erster echter Jev-Beobachtungslauf: Funktion, Kosten, Abweichungen
 - [`docs/06_jev_robustheit.md`](docs/06_jev_robustheit.md) – Robustheitstests der Jev-Budgetfrage: Darstellung vs. Information
+- [`docs/07_jev_paartest.md`](docs/07_jev_paartest.md) – vorab festgelegter Paartest: unterscheidet Jev einzelne Haushaltsinformationen?
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 
