@@ -202,22 +202,30 @@ def fill_metadata(rec: CallRecord) -> None:
 
 class ReplayClient:
     """Answers from a previous log by request hash; never touches the network.
-    A request that is not in the log is an error, not a silent fallback."""
 
-    def __init__(self, log_path: str | os.PathLike):
-        self.records: dict[str, dict] = {}
+    Identical requests (e.g. deliberate repeats) receive their recorded
+    answers in the original order. A request that is not in the log, or asked
+    more often than recorded, is an error, not a silent fallback."""
+
+    def __init__(self, log_path: str | os.PathLike | None = None):
+        self.records: dict[str, list[dict]] = {}
+        if log_path is not None:
+            self.load(log_path)
+
+    def load(self, log_path: str | os.PathLike) -> None:
         with open(log_path, encoding="utf-8") as f:
             for line in f:
                 d = json.loads(line)
                 if d.get("type") == "call":
-                    self.records[d["request_sha256"]] = d
+                    self.records.setdefault(d["request_sha256"], []).append(d)
 
     def decide(self, body: dict) -> CallRecord:
         h = request_hash(body)
-        d = self.records.get(h)
-        if d is None:
+        queue = self.records.get(h)
+        if not queue:
             return CallRecord(request_sha256=h, request=body, status="error", model_requested=body.get("model"),
                               error_kind=ReplayMissError.kind, error="request not found in replay log", replayed=True)
+        d = queue.pop(0)
         fields = {k: d[k] for k in CallRecord.__dataclass_fields__ if k in d}
         rec = CallRecord(**fields)
         rec.replayed = True

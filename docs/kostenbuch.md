@@ -6,3 +6,4 @@ Vor der Freigabe ausgegeben (mit Einzelfreigabe): ≈ 0,0096 USD (Jev-Beobachtun
 
 | Datum | Lauf | Einzelgrenze USD | Kosten USD | Summe seit Freigabe USD |
 |---|---|---|---|---|
+| 2026-10-20 | SCE-Vorhersagetest (Run 39504236760), 1 400 Anfragen | 0,06 | 0,0393 | 0,0393 |

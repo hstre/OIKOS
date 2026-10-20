@@ -265,3 +265,17 @@ def test_decider_rejects_wrong_array_length_and_missing_actions():
         Decider(Short())(obs, space, rng)
     with pytest.raises(DecisionShapeError):
         Decider(Missing())(obs, space, rng)
+
+
+def test_replay_returns_repeated_identical_requests_in_order(tmp_path):
+    log = tmp_path / "log.jsonl"
+    b = body()
+    first = client(FakeTransport(payload=answer(choice="b1"))).decide(b)
+    second = client(FakeTransport(payload=answer(choice="b4"))).decide(b)
+    with open(log, "w") as f:
+        for rec in (first, second):
+            f.write(json.dumps({"type": "call", **rec.to_dict()}) + "\n")
+    rc = ReplayClient(log)
+    got = [rc.decide(b).response["answers"]["goods_budget"]["choice"] for _ in range(2)]
+    assert got == ["b1", "b4"]
+    assert rc.decide(b).error_kind == "replay_miss"   # asked more often than recorded

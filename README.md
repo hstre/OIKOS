@@ -86,6 +86,8 @@ LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Br
 - [`docs/06_jev_robustheit.md`](docs/06_jev_robustheit.md) – Robustheitstests der Jev-Budgetfrage: Darstellung vs. Information
 - [`docs/07_jev_paartest.md`](docs/07_jev_paartest.md) – vorab festgelegter Paartest: unterscheidet Jev einzelne Haushaltsinformationen?
 - [`docs/08_empirischer_bezug.md`](docs/08_empirischer_bezug.md) – Datenprüfung und vorab festgelegtes Versuchsdesign für den empirischen Vorhersagetest (SCE)
+- [`docs/09_sce_ergebnisse.md`](docs/09_sce_ergebnisse.md) – Ergebnisse: kein nachgewiesener Zusatznutzen von Jev gegenüber einem einfachen Logit
+- [`docs/kostenbuch.md`](docs/kostenbuch.md) – Kosten selbst gestarteter API-Läufe
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 

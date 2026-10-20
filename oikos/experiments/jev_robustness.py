@@ -184,10 +184,10 @@ def run_tests(spec_path, original_log, out_dir, cost_limit_usd: float = 0.01, cl
 
 class _MultiReplay(ReplayClient):
     def __init__(self, paths):
-        self.records = {}
+        super().__init__()
         for p in paths:
             if Path(p).exists():
-                self.records.update(ReplayClient(p).records)
+                self.load(p)
 
 
 # ---------------------------------------------------------- analysis
