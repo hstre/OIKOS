@@ -125,3 +125,9 @@ Gewählte Optionen nach Betrag, Position und Kennung je Darstellung: `results/je
   - ein Optionsbereich, der die Deckelung vermeidet;
   - abgestufte statt binärer Merkmale, etwa mehrere Einkommens- oder Rücklagenniveaus;
   - ein Abgleich der Größenordnungen mit empirischen Konsumquoten im Rahmen der Arbeit an den Haushaltsprofilen.
+
+## Nachtrag (2026-10-20): Einordnung der Hypothesen
+
+Die Hypothesen in Teil A bleiben Hypothesen; das Ergebnis bestätigt oder widerlegt keine davon empirisch. Das gilt besonders für P4: Ein unverändertes Konsumbudget bei höheren Energiekosten ist **nicht automatisch falsch**. Haushalte können den Mehrbetrag aus ihrer Ersparnisbildung oder ihren Rücklagen bezahlen, statt andere Ausgaben zu kürzen. Die Budgetfrage misst nur die Ausgaben für andere Güter, nicht die Aufteilung zwischen Konsum, Ersparnis und Verschuldung. Welche Reaktion realistisch ist, kann nur ein empirischer Abgleich zeigen (`08_empirischer_bezug.md`).
+
+Gesicherter Stand: Branch `stand/jev-tests-2026-10-19` (Commit `2c8ce95`), lokal zusätzlich Tag `jev-tests-2026-10-19`.

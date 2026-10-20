@@ -85,6 +85,7 @@ LLM-Variante auf denselben Seeds und committet Tabelle und Ergebnisse auf den Br
 - [`docs/05_jev_beobachtung_lauf1.md`](docs/05_jev_beobachtung_lauf1.md) – erster echter Jev-Beobachtungslauf: Funktion, Kosten, Abweichungen
 - [`docs/06_jev_robustheit.md`](docs/06_jev_robustheit.md) – Robustheitstests der Jev-Budgetfrage: Darstellung vs. Information
 - [`docs/07_jev_paartest.md`](docs/07_jev_paartest.md) – vorab festgelegter Paartest: unterscheidet Jev einzelne Haushaltsinformationen?
+- [`docs/08_empirischer_bezug.md`](docs/08_empirischer_bezug.md) – Datenprüfung und vorab festgelegtes Versuchsdesign für den empirischen Vorhersagetest (SCE)
 - [`results/energy_shock/report.md`](results/energy_shock/report.md) – Ergebnisse Experiment 1
 - [`results/energy_shock_sensitivity/sensitivity.md`](results/energy_shock_sensitivity/sensitivity.md) – Sensitivität
 

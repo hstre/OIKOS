@@ -87,7 +87,8 @@ def build_request(model: str, *, employed: bool, net_income: float, savings: flo
     return body, options
 
 
-def parse_choice(response: dict | None, option_keys: list[str]) -> tuple[str, dict[str, float], float | None]:
+def parse_choice(response: dict | None, option_keys: list[str],
+                 question_id: str = QUESTION_ID) -> tuple[str, dict[str, float], float | None]:
     """Validate a Decisions response for the budget question.
 
     Raises ResponseFormatError for missing or malformed fields and wrong
@@ -98,9 +99,9 @@ def parse_choice(response: dict | None, option_keys: list[str]) -> tuple[str, di
     answers = response.get("answers")
     if not isinstance(answers, dict):
         raise ResponseFormatError("field 'answers' missing")
-    if set(answers) != {QUESTION_ID}:
-        raise ResponseFormatError(f"expected exactly one answer '{QUESTION_ID}', got {sorted(answers)}")
-    a = answers[QUESTION_ID]
+    if set(answers) != {question_id}:
+        raise ResponseFormatError(f"expected exactly one answer '{question_id}', got {sorted(answers)}")
+    a = answers[question_id]
     if not isinstance(a, dict) or a.get("type") != "choice":
         raise ResponseFormatError("answer is not of type 'choice'")
     if "choice" not in a:

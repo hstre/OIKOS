@@ -1,0 +1,53 @@
+# Registered SCE prediction test (1 400 Jev requests, cost limit 0.06 USD,
+# observation only; downloads public NY Fed data). Uses the repository secret
+# OPENROUTER_API_KEY only in the live step; GitHub masks it in logs.
+# Start: push a branch named sce-run/<anything> (only after approval of the costs).
+name: SCE validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["sce-run/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sce-validation
+  cancel-in-progress: false
+
+jobs:
+  sce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev,empirics]"
+      - name: Tests (simulated API responses only)
+        run: python -m pytest -q
+      - name: SCE validation (live, cost limit 0.06 USD)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m oikos.empirics sce-validation --mode live --out results/sce_validation
+      - name: Replay check (no network, no key)
+        if: always()
+        run: |
+          python -m oikos.empirics sce-validation --mode replay --replay-log results/sce_validation/jev_log.jsonl \
+            --out results/sce_validation_replay
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "oikos-bot"
+          git config user.email "oikos-bot@users.noreply.github.com"
+          git add results/sce_validation results/sce_validation_replay || true
+          git commit -m "SCE validation (${GITHUB_RUN_ID})" || echo "nothing to commit"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sce-validation
+          path: results/sce_validation*

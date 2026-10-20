@@ -8,3 +8,6 @@ build/
 results/**/monthly.csv.gz
 results/**/sensitivity_summary.csv
 .env
+# raw and processed SCE files: downloaded on demand, not versioned
+data/sce/raw/
+data/sce/processed/
